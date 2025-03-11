@@ -22,8 +22,9 @@ import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 public interface PawnsBoard {
 
   /**
-   * Initializes a new game with the specified dimensions, player decks, and starting hand size.
-   * Sets up the board with the correct number of rows and columns, and initializes player decks.
+   * Initializes and starts a new game with the specified parameters.
+   * Sets up the board with rows and columns, initializes player decks from the deck config file,
+   * deals cards to each player's hand, and sets Red as the first player.
    * The starting board has a single pawn in each cell of the first and last columns,
    * belonging to the Red and Blue players respectively.
    *
@@ -31,23 +32,13 @@ public interface PawnsBoard {
    *
    * @param rows the number of rows on the board (must be positive)
    * @param cols the number of columns on the board (must be odd and greater than 1)
-   * @param redDeck the deck of cards for the Red player
-   * @param blueDeck the deck of cards for the Blue player
-   * @param startingHandSize the number of cards each player starts with (must not exceed 1/3 of
-   *                         deck size)
-   * @throws IllegalArgumentException if dimensions are invalid, decks don't contain enough cards,
+   * @param deckConfigPath path to the deck configuration file
+   * @param startingHandSize the number of cards each player starts with (cannot exceed 1/3 of deck size using integer division)
+   * @throws IllegalArgumentException if dimensions are invalid, deck configuration is invalid,
    *         or starting hand size is too large
    */
-  void initializeGame(int rows, int cols, List<Card> redDeck, List<Card> blueDeck,
-                      int startingHandSize) throws IllegalArgumentException;
-
-  /**
-   * Starts the game after initialization. Deals cards to each player's hand from their respective
-   * decks and sets the current player to Red (who always goes first).
-   *
-   * @throws IllegalStateException if the game has already been started or hasn't been initialized
-   */
-  void startGame() throws IllegalStateException;
+  void startGame(int rows, int cols, String deckConfigPath, int startingHandSize) 
+      throws IllegalArgumentException;
 
   /**
    * Checks if the game has ended. The game ends when both players pass their turn in succession.
@@ -81,17 +72,17 @@ public interface PawnsBoard {
    * <p>INVARIANT: When applying card influence, no cell will ever exceed the maximum of
    * 3 pawns.</p>
    *
-   * @param card the card to place on the board
+   * @param cardIndex the index of the card in the current player's hand
    * @param row the row index where the card will be placed
    * @param col the column index where the card will be placed
    * @throws IllegalArgumentException if the row or column is out of bounds
    * @throws IllegalStateException if the game hasn't been started or is already over
-   * @throws cs3500.pawnsboard.model.exceptions.IllegalAccessException if the cell doesn't contain enough pawns to cover the card's
+   * @throws IllegalAccessException if the cell doesn't contain enough pawns to cover the card's
    *                                cost
    * @throws IllegalOwnerException if the pawns in the cell aren't owned by the current player
    * @throws IllegalCardException if the card is not in the current player's hand
    */
-  void placeCard(Card card, int row, int col)
+  void placeCard(int cardIndex, int row, int col)
       throws IllegalArgumentException, IllegalStateException, IllegalAccessException,
       IllegalOwnerException, IllegalCardException;
 
@@ -125,12 +116,11 @@ public interface PawnsBoard {
       throws IllegalArgumentException, IllegalStateException;
 
   /**
-   * Gets the owner of a cell's contents (pawns or card). If the cell is empty, returns enum
-   * type NONE.
+   * Gets the owner of a cell's contents (pawns or card). If the cell is empty, returns null.
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
-   * @return the Player who owns the cell's contents, or NONE if the cell is empty
+   * @return the Player who owns the cell's contents, or null if the cell is empty
    * @throws IllegalArgumentException if the row or column is out of bounds
    * @throws IllegalStateException if the game hasn't been initialized
    */
@@ -170,17 +160,7 @@ public interface PawnsBoard {
    */
   int getRemainingDeckSize(Player player) throws IllegalStateException;
 
-  /**
-   * Gets the scores for each player in a specific row.
-   * The score is calculated based on the value of cards owned by each player in that row.
-   *
-   * @param row the row index
-   * @return an array where the first element is Red's score and the second is Blue's score
-   * @throws IllegalArgumentException if the row is out of bounds
-   * @throws IllegalStateException if the game hasn't been initialized
-   */
-  int[] getRowScores(int row)
-      throws IllegalArgumentException, IllegalStateException;
+
 
   /**
    * Gets the total score for each player across all rows.
@@ -195,9 +175,25 @@ public interface PawnsBoard {
   /**
    * Gets the winning player if the game is over.
    *
-   * @return the winning Player (RED or BLUE), or TIE if the game is tied, or null if game not
-   * over yet
+   * @return the winning Player (RED or BLUE), null if the game is tied or not over yet
    * @throws IllegalStateException if the game hasn't been started
    */
   Player getWinner() throws IllegalStateException;
+
+  /**
+   * Gets the hand of the current player.
+   *
+   * @return a list of cards in the current player's hand
+   * @throws IllegalStateException if the game hasn't been started
+   */
+  List<Card> getHand() throws IllegalStateException;
+
+  /**
+   * Removes the specified card from the current player's hand after it has been placed.
+   *
+   * @param cardIndex the index of the card to discard from the current player's hand
+   * @throws IllegalCardException if the card is not in the current player's hand
+   * @throws IllegalStateException if the game hasn't been started or is already over
+   */
+  void discardCard(int cardIndex) throws IllegalCardException, IllegalStateException;
 }
