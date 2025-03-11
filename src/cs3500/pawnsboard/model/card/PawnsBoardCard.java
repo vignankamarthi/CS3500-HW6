@@ -3,9 +3,10 @@ package cs3500.pawnsboard.model.card;
 import java.util.Arrays;
 
 /**
- * Implementation of the Card interface for the Pawns Board game.
+ * Cards for the Pawns Board game that have a defined name, cost between 1 and 3 pawns,
+ * a positive value, and an influence grid showing which cells are influenced and which are
+ * not.
  */
-//TODO: Read through this
 public class PawnsBoardCard implements Card {
   private final String name;
   private final int cost;
@@ -19,7 +20,10 @@ public class PawnsBoardCard implements Card {
    * @param cost          the cost of the card (1-3 pawns)
    * @param value         the value score of the card
    * @param influenceGrid the influence grid as a 2D boolean array
-   * @throws IllegalArgumentException if any parameter is invalid
+   * @throws IllegalArgumentException if the card name is null or empty
+   * @throws IllegalArgumentException if the card cost is not between 1 and 3
+   * @throws IllegalArgumentException the card value is not positive
+   * @throws IllegalArgumentException is the influence grid is not a 5x5 grid
    */
   public PawnsBoardCard(String name, int cost, int value, boolean[][] influenceGrid) {
     if (name == null || name.isEmpty()) {
@@ -28,7 +32,7 @@ public class PawnsBoardCard implements Card {
     if (cost < 1 || cost > 3) {
       throw new IllegalArgumentException("Card cost must be between 1 and 3");
     }
-    if (value <= 0) {
+    if (value < 1) {
       throw new IllegalArgumentException("Card value must be positive");
     }
     if (influenceGrid == null || influenceGrid.length != 5 
@@ -39,43 +43,72 @@ public class PawnsBoardCard implements Card {
     this.name = name;
     this.cost = cost;
     this.value = value;
-    this.influenceGrid = deepCopyGrid(influenceGrid);
+    this.influenceGrid = gridCopy(influenceGrid);
   }
   
   /**
-   * Creates a deep copy of a 2D boolean array.
+   * Creates a perfect copy of a 2D boolean array.
    *
    * @param original the original array to copy
-   * @return a deep copy of the array
+   * @return a perfect copy of the array
    */
-  private boolean[][] deepCopyGrid(boolean[][] original) {
+  private boolean[][] gridCopy(boolean[][] original) {
     boolean[][] copy = new boolean[original.length][];
     for (int i = 0; i < original.length; i++) {
       copy[i] = Arrays.copyOf(original[i], original[i].length);
     }
     return copy;
   }
-  
+
+  /**
+   * Gets the name of the card.
+   *
+   * @return the card name
+   */
   @Override
   public String getName() {
     return name;
   }
-  
+
+
+  /**
+   * Gets the cost of the card (1-3 pawns).
+   *
+   * @return the card cost
+   */
   @Override
   public int getCost() {
     return cost;
   }
-  
+
+  /**
+   * Gets the value score of the card.
+   *
+   * @return the value score
+   */
   @Override
   public int getValue() {
     return value;
   }
-  
+
+  /**
+   * Gets the influence grid as a 2D boolean array.
+   * True indicates a cell has influence, false indicates no influence.
+   *
+   * @return the influence grid
+   */
   @Override
   public boolean[][] getInfluenceGrid() {
-    return deepCopyGrid(influenceGrid);
+    return gridCopy(influenceGrid);
   }
-  
+
+  /**
+   * Gets the influence grid as a 2D char array.
+   * 'I' indicates a cell has influence, 'X' indicates no influence,
+   * 'C' indicates the card position.
+   *
+   * @return the influence grid as chars
+   */
   @Override
   public char[][] getInfluenceGridAsChars() {
     char[][] charGrid = new char[5][5];
@@ -94,7 +127,15 @@ public class PawnsBoardCard implements Card {
     
     return charGrid;
   }
-  
+
+
+  /**
+   * Determines if this card is equal to another object.
+   * Cards are equal if they have the same name, cost, value score, and influence grid.
+   *
+   * @param o the object to compare with
+   * @return true if equal, false otherwise
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -125,7 +166,16 @@ public class PawnsBoardCard implements Card {
     
     return true;
   }
-  
+
+
+  /**
+   * Returns a hash code value for the card.
+   * Consistent with equals: equal cards must have equal hash codes.
+   * Robust implementation of hashing is necessary to ensure that cards follows
+   * the specified equality in the assignment instructions.
+   *
+   * @return a hash code value for this card
+   */
   @Override
   public int hashCode() {
     int result = name.hashCode();

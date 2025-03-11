@@ -3,6 +3,7 @@ package cs3500.pawnsboard.model;
 import cs3500.pawnsboard.model.card.Card;
 import cs3500.pawnsboard.model.card.CardFactory;
 import cs3500.pawnsboard.model.card.PawnsBoardCardFactory;
+import cs3500.pawnsboard.model.exceptions.InvalidDeckConfigurationException;
 import cs3500.pawnsboard.model.reader.CardReader;
 import cs3500.pawnsboard.model.reader.PawnsBoardCardReader;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.HashMap;
  * Utility class for building decks from lists of cards.
  * Provides methods to create, validate, and mirror decks.
  */
+//TODO: Add a shuffle boolean option
 public class DeckBuilder {
   
   /**
@@ -22,10 +24,11 @@ public class DeckBuilder {
    *
    * @param filePath path to the card configuration file
    * @return a list containing two lists of cards: original (red) and mirrored (blue)
-   * @throws IllegalArgumentException if the file cannot be read or has invalid format
+   * @throws InvalidDeckConfigurationException if the file cannot be read
+   * @throws InvalidDeckConfigurationException if the file has and invalid format
    */
-  public static List<List<Card>> createDecks(String filePath) 
-      throws IllegalArgumentException {
+  public static List<List<Card>> createDecks(String filePath)
+      throws InvalidDeckConfigurationException {
     CardReader reader = new PawnsBoardCardReader(new PawnsBoardCardFactory());
     List<Card> originalCards = reader.readCards(filePath);
     
@@ -43,9 +46,9 @@ public class DeckBuilder {
    * Validates that the deck follows game rules (maximum two copies of any card).
    *
    * @param cards the list of cards to validate
-   * @throws IllegalArgumentException if the deck contains more than two copies of any card
+   * @throws InvalidDeckConfigurationException if the deck contains more than two copies of any card
    */
-  private static void validateDeck(List<Card> cards) throws IllegalArgumentException {
+  private static void validateDeck(List<Card> cards) throws InvalidDeckConfigurationException {
     // Count occurrences of each card name
     Map<String, Integer> cardCounts = new HashMap<>();
     
@@ -54,7 +57,7 @@ public class DeckBuilder {
       cardCounts.put(name, cardCounts.getOrDefault(name, 0) + 1);
       
       if (cardCounts.get(name) > 2) {
-        throw new IllegalArgumentException(
+        throw new InvalidDeckConfigurationException(
             "Deck contains more than two copies of card: " + name);
       }
     }

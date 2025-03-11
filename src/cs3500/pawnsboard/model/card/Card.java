@@ -57,6 +57,8 @@ public interface Card {
   /**
    * Returns a hash code value for the card.
    * Consistent with equals: equal cards must have equal hash codes.
+   * Robust implementation of hashing is necessary to ensure that cards follows
+   * the specified equality in the assignment instructions.
    *
    * @return a hash code value for this card
    */
