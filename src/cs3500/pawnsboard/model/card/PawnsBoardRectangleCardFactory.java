@@ -1,10 +1,11 @@
 package cs3500.pawnsboard.model.card;
 
 /**
- * Default implementation of CardFactory for the Pawns Board game.
+ * Default implementation of PawnsBoardRectangleCard for the Pawns Board game.
  * Creates Card objects based on provided parameters using a method chaining approach.
  */
-public class PawnsBoardCardFactory implements CardFactory {
+//TODO: Test this implementation
+public class PawnsBoardRectangleCardFactory implements CardFactory {
   
   /**
    * Creates a card with the specified parameters.
@@ -16,7 +17,8 @@ public class PawnsBoardCardFactory implements CardFactory {
    * @return a new Card instance
    */
   @Override
-  public Card createCard(String name, int cost, int value, char[][] influenceGrid) {
+  public Card createPawnsBoardRectangleCard(String name, int cost, int value,
+                                            char[][] influenceGrid) {
     return new CardBuilder()
         .withName(name)
         .withCost(cost)
@@ -45,7 +47,7 @@ public class PawnsBoardCardFactory implements CardFactory {
   }
   
   /**
-   * Builder class for creating Card instances.
+   * Builder class for creating PawnsBoardRectangleCard instances.
    * Allows for method chaining for better readability.
    */
   private static class CardBuilder {
@@ -55,7 +57,7 @@ public class PawnsBoardCardFactory implements CardFactory {
     private boolean[][] influenceGrid;
     
     /**
-     * Sets the card name.
+     * Sets the PawnsBoardRectangleCard name.
      *
      * @param name the name of the card
      * @return this builder for method chaining
@@ -66,7 +68,7 @@ public class PawnsBoardCardFactory implements CardFactory {
     }
     
     /**
-     * Sets the card cost.
+     * Sets the PawnsBoardRectangleCard cost.
      *
      * @param cost the cost of the card
      * @return this builder for method chaining
@@ -77,7 +79,7 @@ public class PawnsBoardCardFactory implements CardFactory {
     }
     
     /**
-     * Sets the card value.
+     * Sets the PawnsBoardRectangleCard value.
      *
      * @param value the value of the card
      * @return this builder for method chaining
@@ -88,7 +90,7 @@ public class PawnsBoardCardFactory implements CardFactory {
     }
     
     /**
-     * Sets the influence grid.
+     * Sets the PawnsBoardRectangleCard influence grid.
      *
      * @param influenceGrid the influence grid
      * @return this builder for method chaining
@@ -99,12 +101,12 @@ public class PawnsBoardCardFactory implements CardFactory {
     }
     
     /**
-     * Builds a new Card instance.
+     * Builds a new PawnsBoardRectangleCard instance.
      *
      * @return the new Card
      */
     public Card build() {
-      return new PawnsBoardCard(name, cost, value, influenceGrid);
+      return new PawnsBoardRectangleCard(name, cost, value, influenceGrid);
     }
   }
 }

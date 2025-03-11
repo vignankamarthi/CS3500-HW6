@@ -12,16 +12,17 @@ import java.util.Scanner;
  * Implementation of CardReader that reads cards from configuration files for the Pawns Board game.
  * Uses the factory method pattern to create card objects.
  */
-public class PawnsBoardCardReader implements CardReader {
+//TODO: Test this implementation
+public class PawnsBoardRectangleCardReader implements CardReader {
   
   private final CardFactory cardFactory;
   
   /**
-   * Constructs a PawnsBoardCardReader with the specified card factory.
+   * Constructs a PawnsBoardRectangleCardReader with the specified card factory.
    *
    * @param cardFactory factory for creating card objects
    */
-  public PawnsBoardCardReader(CardFactory cardFactory) {
+  public PawnsBoardRectangleCardReader(CardFactory cardFactory) {
     this.cardFactory = cardFactory;
   }
   

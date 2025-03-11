@@ -16,7 +16,7 @@ public interface CardFactory {
    * @param influenceGrid the 5x5 influence grid for the card
    * @return a new Card instance
    */
-  Card createPawnsBoardCard(String name, int cost, int value, char[][] influenceGrid);
+  Card createPawnsBoardRectangleCard(String name, int cost, int value, char[][] influenceGrid);
 
   // Add new Card Type creation methods here:
 }

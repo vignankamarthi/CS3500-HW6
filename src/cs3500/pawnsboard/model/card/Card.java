@@ -26,7 +26,7 @@ public interface Card {
    * @return the value score
    */
   int getValue();
-  
+
   /**
    * Gets the influence grid as a 2D boolean array.
    * True indicates a cell has influence, false indicates no influence.
@@ -64,4 +64,12 @@ public interface Card {
    */
   @Override
   int hashCode();
+
+  /**
+   * Returns a String representation of the card with useful information
+   * about the card and for better readability.
+   * @return a String representation of the card with useful information
+   */
+  @Override
+  public String toString();
 }

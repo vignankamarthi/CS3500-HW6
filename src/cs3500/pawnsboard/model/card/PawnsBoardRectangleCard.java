@@ -1,31 +1,31 @@
 package cs3500.pawnsboard.model.card;
 
 import java.util.Arrays;
-
+//TODO: Test this implementation
 /**
- * Cards for the Pawns Board game that have a defined name, cost between 1 and 3 pawns,
+ * Cards for the PawnsBoardRectangle game that have a defined name, cost between 1 and 3 pawns,
  * a positive value, and an influence grid showing which cells are influenced and which are
  * not.
  */
-public class PawnsBoardCard implements Card {
+public class PawnsBoardRectangleCard implements Card {
   private final String name;
   private final int cost;
   private final int value;
   private final boolean[][] influenceGrid;
   
   /**
-   * Constructs a card with the specified attributes.
+   * Constructs a PawnsBoardRectangleCard with the specified attributes.
    *
-   * @param name          the name of the card
-   * @param cost          the cost of the card (1-3 pawns)
-   * @param value         the value score of the card
+   * @param name          the name of the PawnsBoardRectangleCard
+   * @param cost          the cost of the PawnsBoardRectangleCard (1-3 pawns)
+   * @param value         the value score of the PawnsBoardRectangleCard
    * @param influenceGrid the influence grid as a 2D boolean array
-   * @throws IllegalArgumentException if the card name is null or empty
-   * @throws IllegalArgumentException if the card cost is not between 1 and 3
-   * @throws IllegalArgumentException the card value is not positive
+   * @throws IllegalArgumentException if the PawnsBoardRectangleCard name is null or empty
+   * @throws IllegalArgumentException if the PawnsBoardRectangleCard cost is not between 1 and 3
+   * @throws IllegalArgumentException the PawnsBoardRectangleCard value is not positive
    * @throws IllegalArgumentException is the influence grid is not a 5x5 grid
    */
-  public PawnsBoardCard(String name, int cost, int value, boolean[][] influenceGrid) {
+  public PawnsBoardRectangleCard(String name, int cost, int value, boolean[][] influenceGrid) {
     if (name == null || name.isEmpty()) {
       throw new IllegalArgumentException("Card name cannot be null or empty");
     }
@@ -61,9 +61,9 @@ public class PawnsBoardCard implements Card {
   }
 
   /**
-   * Gets the name of the card.
+   * Gets the name of the PawnsBoardRectangleCard.
    *
-   * @return the card name
+   * @return the PawnsBoardRectangleCard name
    */
   @Override
   public String getName() {
@@ -72,9 +72,9 @@ public class PawnsBoardCard implements Card {
 
 
   /**
-   * Gets the cost of the card (1-3 pawns).
+   * Gets the cost of the PawnsBoardRectangleCard (1-3 pawns).
    *
-   * @return the card cost
+   * @return the PawnsBoardRectangleCard cost
    */
   @Override
   public int getCost() {
@@ -82,7 +82,7 @@ public class PawnsBoardCard implements Card {
   }
 
   /**
-   * Gets the value score of the card.
+   * Gets the value score of the PawnsBoardRectangleCard.
    *
    * @return the value score
    */
@@ -105,7 +105,7 @@ public class PawnsBoardCard implements Card {
   /**
    * Gets the influence grid as a 2D char array.
    * 'I' indicates a cell has influence, 'X' indicates no influence,
-   * 'C' indicates the card position.
+   * 'C' indicates the PawnsBoardRectangleCard position.
    *
    * @return the influence grid as chars
    */
@@ -116,7 +116,7 @@ public class PawnsBoardCard implements Card {
     for (int row = 0; row < 5; row++) {
       for (int col = 0; col < 5; col++) {
         if (row == 2 && col == 2) {
-          charGrid[row][col] = 'C'; // Card position
+          charGrid[row][col] = 'C'; // PawnsBoardRectangleCard position
         } else if (influenceGrid[row][col]) {
           charGrid[row][col] = 'I'; // Has influence
         } else {
@@ -130,8 +130,9 @@ public class PawnsBoardCard implements Card {
 
 
   /**
-   * Determines if this card is equal to another object.
-   * Cards are equal if they have the same name, cost, value score, and influence grid.
+   * Determines if this PawnsBoardRectangleCard is equal to another object.
+   * PawnsBoardRectangleCard are equal if they have the same name, cost, value score,
+   * and influence grid.
    *
    * @param o the object to compare with
    * @return true if equal, false otherwise
@@ -145,7 +146,7 @@ public class PawnsBoardCard implements Card {
       return false;
     }
     
-    PawnsBoardCard card = (PawnsBoardCard) o;
+    PawnsBoardRectangleCard card = (PawnsBoardRectangleCard) o;
     
     if (cost != card.cost) {
       return false;
@@ -169,12 +170,12 @@ public class PawnsBoardCard implements Card {
 
 
   /**
-   * Returns a hash code value for the card.
-   * Consistent with equals: equal cards must have equal hash codes.
-   * Robust implementation of hashing is necessary to ensure that cards follows
+   * Returns a hash code value for the PawnsBoardRectangleCard.
+   * Consistent with equals: equal PawnsBoardRectangleCards must have equal hash codes.
+   * Robust implementation of hashing is necessary to ensure that PawnsBoardRectangleCards follows
    * the specified equality in the assignment instructions.
    *
-   * @return a hash code value for this card
+   * @return a hash code value for this PawnsBoardRectangleCard
    */
   @Override
   public int hashCode() {
@@ -189,7 +190,12 @@ public class PawnsBoardCard implements Card {
     
     return result;
   }
-  
+
+  /**
+   * Returns a String representation of the PawnsBoardRectangleCard with useful information
+   * about the PawnsBoardRectangleCard and for better readability.
+   * @return a String representation of the PawnsBoardRectangleCard with useful information
+   */
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
