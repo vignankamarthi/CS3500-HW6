@@ -1,7 +1,8 @@
-package cs3500.pawnsboard.model.reader;
+package cs3500.pawnsboard.model.card.reader;
 
 import cs3500.pawnsboard.model.card.Card;
-import cs3500.pawnsboard.model.card.CardFactory;
+import cs3500.pawnsboard.model.card.factory.CardFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

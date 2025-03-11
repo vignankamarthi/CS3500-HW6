@@ -1,4 +1,4 @@
-package cs3500.pawnsboard.model.reader;
+package cs3500.pawnsboard.model.card.reader;
 
 import cs3500.pawnsboard.model.card.Card;
 import java.util.List;

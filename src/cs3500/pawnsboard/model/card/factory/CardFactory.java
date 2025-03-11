@@ -1,4 +1,6 @@
-package cs3500.pawnsboard.model.card;
+package cs3500.pawnsboard.model.card.factory;
+
+import cs3500.pawnsboard.model.card.Card;
 
 /**
  * Factory interface for creating Card objects.

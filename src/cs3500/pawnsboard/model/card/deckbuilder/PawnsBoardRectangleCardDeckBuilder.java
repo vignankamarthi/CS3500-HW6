@@ -1,11 +1,11 @@
-package cs3500.pawnsboard.model;
+package cs3500.pawnsboard.model.card.deckbuilder;
 
 import cs3500.pawnsboard.model.card.Card;
-import cs3500.pawnsboard.model.card.CardFactory;
-import cs3500.pawnsboard.model.card.PawnsBoardRectangleCardFactory;
+import cs3500.pawnsboard.model.card.factory.CardFactory;
+import cs3500.pawnsboard.model.card.factory.PawnsBoardRectangleCardFactory;
 import cs3500.pawnsboard.model.exceptions.InvalidDeckConfigurationException;
-import cs3500.pawnsboard.model.reader.CardReader;
-import cs3500.pawnsboard.model.reader.PawnsBoardRectangleCardReader;
+import cs3500.pawnsboard.model.card.reader.CardReader;
+import cs3500.pawnsboard.model.card.reader.PawnsBoardRectangleCardReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

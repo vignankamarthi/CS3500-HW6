@@ -1,4 +1,7 @@
-package cs3500.pawnsboard.model.card;
+package cs3500.pawnsboard.model.card.factory;
+
+import cs3500.pawnsboard.model.card.Card;
+import cs3500.pawnsboard.model.card.PawnsBoardRectangleCard;
 
 /**
  * Default implementation of PawnsBoardRectangleCard for the Pawns Board game.
