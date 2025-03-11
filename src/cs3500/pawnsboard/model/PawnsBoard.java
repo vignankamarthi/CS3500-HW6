@@ -3,6 +3,9 @@ package cs3500.pawnsboard.model;
 import java.util.List;
 
 import cs3500.pawnsboard.model.cards.Card;
+import cs3500.pawnsboard.model.cell.PawnsBoardCell;
+import cs3500.pawnsboard.model.enumerations.CellContent;
+import cs3500.pawnsboard.model.enumerations.Player;
 import cs3500.pawnsboard.model.exceptions.IllegalAccessException;
 import cs3500.pawnsboard.model.exceptions.IllegalCardException;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
@@ -36,8 +39,11 @@ import cs3500.pawnsboard.model.exceptions.InvalidDeckConfigurationException;
  *   <li>Cards are only placed in cells with enough pawns to cover their cost</li>
  *   <li>Cards cannot be placed on cells with pawns owned by another player</li>
  * </ul>
+ *
+ * @param <C> the type of Card used in this game
+ * @param <E> the type of Cell used in this game's board
  */
-public interface PawnsBoard<C extends Card> {
+public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
 
   // -----------------------------------------------------------------------
   // Game Setup and Management

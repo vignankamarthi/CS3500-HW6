@@ -1,6 +1,8 @@
 package cs3500.pawnsboard.model;
 
 import cs3500.pawnsboard.model.cards.Card;
+import cs3500.pawnsboard.model.cell.PawnsBoardCell;
+import cs3500.pawnsboard.model.enumerations.Player;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 
 import java.util.ArrayList;
@@ -12,9 +14,6 @@ import java.util.List;
  * player turns, validation, and scoring calculations that are common across different
  * {@link PawnsBoard} implementations.
  *
- * <p>The abstract class implements methods that have universal behavior regardless of
- * the specific board implementation, while leaving board-specific operations as abstract
- * methods to be implemented by concrete subclasses.</p>
  *
  * <p>All implementations must preserve these core invariants:</p>
  * <ul>
@@ -26,8 +25,10 @@ import java.util.List;
  * </ul>
  *
  * @param <C> the type of Card used in this game
+ * @param <E> the type of Cell used in this game's board
  */
-public abstract class AbstractPawnsBoard<C extends Card> implements PawnsBoard<C> {
+public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCell<C>> 
+        implements PawnsBoard<C, E> {
 
   // Game state
   protected boolean gameStarted;
@@ -128,7 +129,7 @@ public abstract class AbstractPawnsBoard<C extends Card> implements PawnsBoard<C
     }
 
     // Return a defensive copy of the hand
-    return new ArrayList<>(player == Player.RED ? redHand : blueHand);
+    return new ArrayList<>((isPlayerRed(player)) ? redHand : blueHand);
   }
 
   /**
@@ -146,7 +147,7 @@ public abstract class AbstractPawnsBoard<C extends Card> implements PawnsBoard<C
       throw new IllegalArgumentException("Player cannot be null");
     }
 
-    return player == Player.RED ? redDeck.size() : blueDeck.size();
+    return isPlayerRed(player) ? redDeck.size() : blueDeck.size();
   }
 
   /**
@@ -211,7 +212,7 @@ public abstract class AbstractPawnsBoard<C extends Card> implements PawnsBoard<C
    * Switches the current player to the other player.
    */
   protected void switchPlayer() {
-    currentPlayer = (currentPlayer == Player.RED) ? Player.BLUE : Player.RED;
+    currentPlayer = isPlayerRed(currentPlayer) ? Player.BLUE : Player.RED;
   }
 
   /**
@@ -258,7 +259,7 @@ public abstract class AbstractPawnsBoard<C extends Card> implements PawnsBoard<C
    * @return the current player's deck
    */
   protected List<C> getCurrentPlayerDeck() {
-    return currentPlayer == Player.RED ? redDeck : blueDeck;
+    return isPlayerRed(currentPlayer) ? redDeck : blueDeck;
   }
 
   /**
@@ -267,6 +268,16 @@ public abstract class AbstractPawnsBoard<C extends Card> implements PawnsBoard<C
    * @return the current player's hand
    */
   protected List<C> getCurrentPlayerHand() {
-    return currentPlayer == Player.RED ? redHand : blueHand;
+    return isPlayerRed(currentPlayer) ? redHand : blueHand;
+  }
+  
+  /**
+   * Checks if the given player is the RED player.
+   *
+   * @param player the player to check
+   * @return true if the player is RED, false otherwise
+   */
+  protected boolean isPlayerRed(Player player) {
+    return player == Player.RED;
   }
 }

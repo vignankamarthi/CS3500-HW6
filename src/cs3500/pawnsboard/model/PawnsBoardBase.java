@@ -3,6 +3,10 @@ package cs3500.pawnsboard.model;
 import cs3500.pawnsboard.model.cards.Card;
 import cs3500.pawnsboard.model.cards.deckbuilder.DeckBuilder;
 import cs3500.pawnsboard.model.cards.deckbuilder.PawnsBoardBaseCardDeckBuilder;
+import cs3500.pawnsboard.model.cell.PawnsBoardCell;
+import cs3500.pawnsboard.model.cell.PawnsBoardBaseCell;
+import cs3500.pawnsboard.model.enumerations.CellContent;
+import cs3500.pawnsboard.model.enumerations.Player;
 import cs3500.pawnsboard.model.exceptions.IllegalAccessException;
 import cs3500.pawnsboard.model.exceptions.IllegalCardException;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
@@ -41,10 +45,11 @@ import java.util.List;
  */
 //TODO: Test this implementation
 
-public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
+public class PawnsBoardBase<C extends Card> 
+        extends AbstractPawnsBoard<C, PawnsBoardBaseCell<C>> {
 
-  // Board state
-  private Cell<C>[][] board = null;
+  // Board state - using List of Lists instead of arrays for type safety
+  private List<List<PawnsBoardCell<C>>> board;
 
   // Deck builder for card reading
   private final DeckBuilder<C> deckBuilder;
@@ -177,7 +182,7 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
     }
 
     C cardToPlace = currentHand.get(cardIndex);
-    Cell<C> targetCell = board[row][col];
+    PawnsBoardCell<C> targetCell = board.get(row).get(col);
 
     // Check if the cell has pawns
     if (targetCell.getContent() != CellContent.PAWNS) {
@@ -231,7 +236,8 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
-   * @return a {@link CellContent} enum indicating whether the cell is empty, contains pawns, or a card
+   * @return a {@link CellContent} enum indicating whether the cell is empty, contains pawns,
+   *                               or a card
    * @throws IllegalArgumentException if the coordinates are invalid
    * @throws IllegalStateException if the game hasn't been started
    */
@@ -240,7 +246,7 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
           throws IllegalArgumentException, IllegalStateException {
     validateGameStarted();
     validateCoordinates(row, col);
-    return board[row][col].getContent();
+    return board.get(row).get(col).getContent();
   }
 
   /**
@@ -257,7 +263,7 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
           throws IllegalArgumentException, IllegalStateException {
     validateGameStarted();
     validateCoordinates(row, col);
-    return board[row][col].getOwner();
+    return board.get(row).get(col).getOwner();
   }
 
   /**
@@ -275,7 +281,7 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
           throws IllegalArgumentException, IllegalStateException {
     validateGameStarted();
     validateCoordinates(row, col);
-    return board[row][col].getPawnCount();
+    return board.get(row).get(col).getPawnCount();
   }
 
   /**
@@ -299,10 +305,10 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
     int blueScore = 0;
 
     for (int col = 0; col < columns; col++) {
-      Cell<C> cell = board[row][col];
+      PawnsBoardCell<C> cell = board.get(row).get(col);
 
       if (cell.getContent() == CellContent.CARD) {
-        if (cell.getOwner() == Player.RED) {
+        if (isPlayerRed(cell.getOwner())) {
           redScore += cell.getCard().getValue();
         } else {
           blueScore += cell.getCard().getValue();
@@ -336,20 +342,24 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
   }
 
   /**
-   * Creates an empty board with the specified dimensions.
+   * Creates an empty board with the specified dimensions using Lists instead of arrays.
+   * This approach is fully type-safe with generics and doesn't require warning suppressions.
    *
    * @param rows the number of rows
    * @param cols the number of columns
-   * @return a 2D array of empty cells
+   * @return a List of Lists containing empty cells
    */
-  @SuppressWarnings("unchecked")
-  private Cell<C>[][] createEmptyBoard(int rows, int cols) {
-    Cell<C>[][] newBoard = new Cell[rows][cols];
+  private List<List<PawnsBoardCell<C>>> createEmptyBoard(int rows, int cols) {
+    List<List<PawnsBoardCell<C>>> newBoard = new ArrayList<>(rows);
+    
     for (int r = 0; r < rows; r++) {
+      List<PawnsBoardCell<C>> row = new ArrayList<>(cols);
       for (int c = 0; c < cols; c++) {
-        newBoard[r][c] = new Cell<>();
+        row.add(new PawnsBoardBaseCell<>());
       }
+      newBoard.add(row);
     }
+    
     return newBoard;
   }
 
@@ -358,14 +368,19 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
    * The first column contains RED pawns, and the last column contains BLUE pawns.
    */
   private void initializeStartingBoard() {
-    // Add RED pawns to first column
-    for (int r = 0; r < rows; r++) {
-      board[r][0].addPawn(Player.RED);
-    }
+    try {
+      // Add RED pawns to first column
+      for (int r = 0; r < rows; r++) {
+        board.get(r).get(0).addPawn(Player.RED);
+      }
 
-    // Add BLUE pawns to last column
-    for (int r = 0; r < rows; r++) {
-      board[r][columns - 1].addPawn(Player.BLUE);
+      // Add BLUE pawns to last column
+      for (int r = 0; r < rows; r++) {
+        board.get(r).get(columns - 1).addPawn(Player.BLUE);
+      }
+    } catch (IllegalOwnerException e) {
+      // This should never happen during initialization with empty cells
+      throw new IllegalStateException("Error initializing board: " + e.getMessage());
     }
   }
 
@@ -384,7 +399,7 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
     int centerCol = 2;
 
     // For blue player, mirror the influence grid horizontally
-    if (currentPlayer == Player.BLUE) {
+    if (!isPlayerRed(currentPlayer)) {
       influenceGrid = mirrorInfluenceGrid(influenceGrid);
     }
 
@@ -443,153 +458,38 @@ public class PawnsBoardBase<C extends Card> extends AbstractPawnsBoard<C> {
    * @param col the column of the cell
    */
   private void applyInfluenceToCell(int row, int col) {
-    Cell<C> cell = board[row][col];
+    PawnsBoardCell<C> cell = board.get(row).get(col);
 
-    switch (cell.getContent()) {
-      case EMPTY:
-        // Add a pawn of the current player
-        cell.addPawn(currentPlayer);
-        break;
+    try {
+      switch (cell.getContent()) {
+        case EMPTY:
+          // Add a pawn of the current player
+          cell.addPawn(currentPlayer);
+          break;
 
-      case PAWNS:
-        if (cell.getOwner() == currentPlayer) {
-          // Increase pawn count for current player (up to max 3)
-          if (cell.getPawnCount() < 3) {
-            cell.addPawn(currentPlayer);
+        case PAWNS:
+          if (cell.getOwner() == currentPlayer) {
+            // Increase pawn count for current player (up to max 3)
+            if (cell.getPawnCount() < 3) {
+              cell.addPawn(currentPlayer);
+            }
+          } else {
+            // Convert ownership of pawns to current player
+            cell.changeOwnership(currentPlayer);
           }
-        } else {
-          // Convert ownership of pawns to current player
-          cell.changeOwnership(currentPlayer);
-        }
-        break;
+          break;
 
-      case CARD:
-        // No effect on cells with cards
-        break;
+        case CARD:
+          // No effect on cells with cards
+          break;
 
-      default:
-        // Should never happen
-        throw new IllegalStateException("Unknown cell content type");
-    }
-  }
-
-  /**
-   * Represents a single cell on the board.
-   * A cell can contain pawns, a card, or be empty.
-   *
-   * @param <C> the type of Card that can be placed in this cell
-   */
-  private static class Cell<C extends Card> {
-    private CellContent content;
-    private Player owner;
-    private int pawnCount;
-    private C card;
-
-    /**
-     * Creates an empty cell.
-     */
-    public Cell() {
-      this.content = CellContent.EMPTY;
-      this.owner = null;
-      this.pawnCount = 0;
-      this.card = null;
-    }
-
-    /**
-     * Gets the content type of this cell.
-     *
-     * @return the cell content type
-     */
-    public CellContent getContent() {
-      return content;
-    }
-
-    /**
-     * Gets the owner of this cell's contents.
-     *
-     * @return the player who owns the contents, or null if the cell is empty
-     */
-    public Player getOwner() {
-      return owner;
-    }
-
-    /**
-     * Gets the number of pawns in this cell.
-     *
-     * @return the pawn count, or 0 if the cell is empty or contains a card
-     */
-    public int getPawnCount() {
-      return content == CellContent.PAWNS ? pawnCount : 0;
-    }
-
-    /**
-     * Gets the card in this cell.
-     *
-     * @return the card, or null if the cell is empty or contains pawns
-     */
-    public C getCard() {
-      return content == CellContent.CARD ? card : null;
-    }
-
-    /**
-     * Adds a pawn to this cell. If the cell is empty, it becomes a pawn cell.
-     * The maximum number of pawns in a cell is 3.
-     *
-     * @param player the player who owns the pawn
-     * @throws IllegalStateException if trying to add a pawn to a cell with a card
-     * @throws IllegalStateException if the cell already has the maximum number of pawns
-     * @throws IllegalStateException if trying to add a pawn of a different owner
-     */
-    public void addPawn(Player player) {
-      if (content == CellContent.CARD) {
-        throw new IllegalStateException("Cannot add pawn to a cell containing a card");
+        default:
+          // Should never happen
+          throw new IllegalStateException("Unknown cell content type");
       }
-
-      if (content == CellContent.EMPTY) {
-        content = CellContent.PAWNS;
-        owner = player;
-        pawnCount = 1;
-      } else {
-        // Cell already has pawns
-        if (pawnCount >= 3) {
-          throw new IllegalStateException("Cell already has maximum number of pawns");
-        }
-
-        if (owner != player) {
-          throw new IllegalStateException("Cannot add pawn of different owner");
-        }
-
-        pawnCount++;
-      }
-    }
-
-    /**
-     * Changes the ownership of pawns in this cell.
-     * The pawn count remains the same, but the owner changes.
-     *
-     * @param newOwner the new owner of the pawns
-     * @throws IllegalStateException if trying to change ownership of non-pawn content
-     */
-    public void changeOwnership(Player newOwner) {
-      if (content != CellContent.PAWNS) {
-        throw new IllegalStateException("Can only change ownership of pawns");
-      }
-
-      owner = newOwner;
-    }
-
-    /**
-     * Places a card in this cell, replacing any pawns.
-     * The cell's content becomes a card, and pawns are removed.
-     *
-     * @param card the card to place
-     * @param player the player who owns the card
-     */
-    public void setCard(C card, Player player) {
-      this.content = CellContent.CARD;
-      this.owner = player;
-      this.card = card;
-      this.pawnCount = 0;
+    } catch (IllegalOwnerException e) {
+      // This should not happen with the current implementation
+      throw new IllegalStateException("Error applying influence: " + e.getMessage());
     }
   }
 }
