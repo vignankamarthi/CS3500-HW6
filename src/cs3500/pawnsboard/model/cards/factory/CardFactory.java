@@ -20,7 +20,7 @@ public interface CardFactory<C extends Card> {
    * @param influenceGrid the 5x5 influence grid for the card
    * @return a new card instance of type C
    */
-  C createPawnsBoardRectangleCard(String name, int cost, int value, char[][] influenceGrid);
+  C createPawnsBoardBaseCard(String name, int cost, int value, char[][] influenceGrid);
 
   // Add new Card Type creation methods here:
 }

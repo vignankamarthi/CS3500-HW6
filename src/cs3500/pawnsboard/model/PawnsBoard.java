@@ -28,9 +28,10 @@ import cs3500.pawnsboard.model.exceptions.InvalidDeckConfigurationException;
  *   <li>...</li>
  * </ul>
  *
- * //TODO: Document ONE OF THESE for the assignment instructions
  * <p>Implementations must preserve these core INVARIANTS:</p>
  * <ul>
+ *   <li>Every board implementation must use a grid representation with rows and columns,
+ *       regardless of the board's shape</li>
  *   <li>A cell can only contain one type of content (empty, pawns, or a card)</li>
  *   <li>Cards are only placed in cells with enough pawns to cover their cost</li>
  *   <li>Cards cannot be placed on cells with pawns owned by another player</li>
@@ -61,7 +62,7 @@ public interface PawnsBoard<C extends Card> {
   /**
    * Checks if the game has ended.
    *
-   * <p>In the PawnsBoardRectangle implementation, the game ends when both players pass their turn
+   * <p>In the PawnsBoardBase implementation, the game ends when both players pass their turn
    * in succession. Alternative implementations might define different ending conditions.</p>
    *
    * @return true if the game is over, false otherwise
@@ -79,16 +80,6 @@ public interface PawnsBoard<C extends Card> {
   // -----------------------------------------------------------------------
   // Player Actions
   // -----------------------------------------------------------------------
-
-  /**
-   * The current player draws a card from their deck.
-   *
-   * <p>In the PawnsBoardRectangle implementation, this happens automatically at the start of a
-   * turn. If there are no cards left in the deck, no card is drawn.</p>
-   *
-   * @throws IllegalStateException if the game hasn't been started or is already over
-   */
-  void drawCard() throws IllegalStateException;
 
   /**
    * Places a card from the current player's hand onto the specified cell.
@@ -116,7 +107,7 @@ public interface PawnsBoard<C extends Card> {
   /**
    * The current player passes their turn, giving control to the other player.
    *
-   * <p>In the PawnsBoardRectangle implementation, if both players pass consecutively,
+   * <p>In the PawnsBoardBase implementation, if both players pass consecutively,
    * the game ends.</p>
    *
    * @throws IllegalStateException if the game hasn't been started or is already over
@@ -132,7 +123,7 @@ public interface PawnsBoard<C extends Card> {
   /**
    * Gets the dimensions of the board.
    *
-   * <p>In the PawnsBoardRectangle implementation, the board is a rectangle so the int array will have
+   * <p>In the PawnsBoardBase implementation, the board is a rectangle so the int array will have
    * 2 values, first one being the width of the board, and second value being the height of the
    * board.</p>
    *
@@ -169,7 +160,7 @@ public interface PawnsBoard<C extends Card> {
   /**
    * Gets the number of pawns in a specified cell.
    *
-   * <p>This method will never return a value greater than 3, in the PawnsBoardRectangle
+   * <p>This method will never return a value greater than 3, in the PawnsBoardBase
    * implementation.</p>
    *
    * @param row the row index of the cell
@@ -207,7 +198,7 @@ public interface PawnsBoard<C extends Card> {
   /**
    * Gets the row scores for both players for a specific row.
    *
-   * <p>In the PawnsBoardRectangle implementation, the row score is calculated by summing the value
+   * <p>In the PawnsBoardBase implementation, the row score is calculated by summing the value
    * scores of each player's cards on that row.</p>
    *
    * @param row the row index to calculate scores for
@@ -220,7 +211,7 @@ public interface PawnsBoard<C extends Card> {
   /**
    * Gets the total score for each player across all rows.
    *
-   * <p>In the PawnsBoardRectangle implementation, for each row, the player with the higher row score
+   * <p>In the PawnsBoardBase implementation, for each row, the player with the higher row score
    * adds that score to their total. If row scores are tied, neither player gets points.
    * Alternative implementations may use different scoring rules.</p>
    *
