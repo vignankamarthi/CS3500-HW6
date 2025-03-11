@@ -1,7 +1,7 @@
-package cs3500.pawnsboard.model.card.reader;
+package cs3500.pawnsboard.model.cards.reader;
 
-import cs3500.pawnsboard.model.card.Card;
-import cs3500.pawnsboard.model.card.factory.CardFactory;
+import cs3500.pawnsboard.model.cards.PawnsBoardRectangleCard;
+import cs3500.pawnsboard.model.cards.factory.CardFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,20 +10,21 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Implementation of CardReader that reads cards from configuration files for the Pawns Board game.
+ * Implementation of {@link CardReader} that reads {@link PawnsBoardRectangleCard}s from 
+ * configuration files for the Pawns Board game.
  * Uses the factory method pattern to create card objects.
  */
 //TODO: Test this implementation
-public class PawnsBoardRectangleCardReader implements CardReader {
+public class PawnsBoardRectangleCardReader implements CardReader<PawnsBoardRectangleCard> {
   
-  private final CardFactory cardFactory;
+  private final CardFactory<PawnsBoardRectangleCard> cardFactory;
   
   /**
    * Constructs a PawnsBoardRectangleCardReader with the specified card factory.
    *
-   * @param cardFactory factory for creating card objects
+   * @param cardFactory factory for creating {@link PawnsBoardRectangleCard} objects
    */
-  public PawnsBoardRectangleCardReader(CardFactory cardFactory) {
+  public PawnsBoardRectangleCardReader(CardFactory<PawnsBoardRectangleCard> cardFactory) {
     this.cardFactory = cardFactory;
   }
   
@@ -31,12 +32,12 @@ public class PawnsBoardRectangleCardReader implements CardReader {
    * Reads cards from a file and returns them as a list.
    *
    * @param filePath path to the card configuration file
-   * @return a list of cards read from the file
+   * @return a list of {@link PawnsBoardRectangleCard}s read from the file
    * @throws IllegalArgumentException if the file cannot be read or has invalid format
    */
   @Override
-  public List<Card> readCards(String filePath) throws IllegalArgumentException {
-    List<Card> cards = new ArrayList<>();
+  public List<PawnsBoardRectangleCard> readCards(String filePath) throws IllegalArgumentException {
+    List<PawnsBoardRectangleCard> cards = new ArrayList<>();
     File file = new File(filePath);
     
     try (Scanner scanner = new Scanner(file)) {
@@ -57,10 +58,10 @@ public class PawnsBoardRectangleCardReader implements CardReader {
    * Reads a single card from the scanner.
    *
    * @param scanner the scanner to read from
-   * @return a card object
+   * @return a {@link PawnsBoardRectangleCard} object
    * @throws IllegalArgumentException if card format is invalid
    */
-  private Card readSingleCard(Scanner scanner) throws IllegalArgumentException {
+  private PawnsBoardRectangleCard readSingleCard(Scanner scanner) throws IllegalArgumentException {
     // Read card header
     if (!scanner.hasNextLine()) {
       throw new IllegalArgumentException("Unexpected end of file");
@@ -81,7 +82,7 @@ public class PawnsBoardRectangleCardReader implements CardReader {
     char[][] influenceGrid = readInfluenceGrid(scanner);
     
     // Use the factory to create the card
-    return cardFactory.createPawnsBoardCard(name, cost, value, influenceGrid);
+    return cardFactory.createPawnsBoardRectangleCard(name, cost, value, influenceGrid);
   }
   
   /**

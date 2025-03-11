@@ -1,7 +1,9 @@
-package cs3500.pawnsboard.model.card;
+package cs3500.pawnsboard.model.cards;
+
+import cs3500.pawnsboard.model.PawnsBoard;
 
 /**
- * Interface representing a card in the Pawns Board game.
+ * Interface representing a card in the {@link PawnsBoard} game.
  * A card has a name, cost, value score, and influence grid.
  */
 public interface Card {
@@ -30,6 +32,8 @@ public interface Card {
   /**
    * Gets the influence grid as a 2D boolean array.
    * True indicates a cell has influence, false indicates no influence.
+   * This is used to determine which cells are affected when a card is played in
+   * {@link PawnsBoard#placeCard}.
    *
    * @return the influence grid
    */

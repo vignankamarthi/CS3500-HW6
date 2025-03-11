@@ -1,14 +1,14 @@
-package cs3500.pawnsboard.model.card.factory;
+package cs3500.pawnsboard.model.cards.factory;
 
-import cs3500.pawnsboard.model.card.Card;
-import cs3500.pawnsboard.model.card.PawnsBoardRectangleCard;
+import cs3500.pawnsboard.model.cards.Card;
+import cs3500.pawnsboard.model.cards.PawnsBoardRectangleCard;
 
 /**
- * Default implementation of PawnsBoardRectangleCard for the Pawns Board game.
- * Creates Card objects based on provided parameters using a method chaining approach.
+ * Implementation of {@link CardFactory} for {@link PawnsBoardRectangleCard}s in the Pawns Board game.
+ * Creates card objects based on provided parameters using a method chaining approach.
  */
 //TODO: Test this implementation
-public class PawnsBoardRectangleCardFactory implements CardFactory {
+public class PawnsBoardRectangleCardFactory implements CardFactory<PawnsBoardRectangleCard> {
   
   /**
    * Creates a card with the specified parameters.
@@ -17,10 +17,10 @@ public class PawnsBoardRectangleCardFactory implements CardFactory {
    * @param cost          the cost of the card (1-3)
    * @param value         the value score of the card
    * @param influenceGrid the 5x5 influence grid for the card
-   * @return a new Card instance
+   * @return a new {@link PawnsBoardRectangleCard} instance
    */
   @Override
-  public Card createPawnsBoardRectangleCard(String name, int cost, int value,
+  public PawnsBoardRectangleCard createPawnsBoardRectangleCard(String name, int cost, int value,
                                             char[][] influenceGrid) {
     return new CardBuilder()
         .withName(name)
@@ -106,9 +106,9 @@ public class PawnsBoardRectangleCardFactory implements CardFactory {
     /**
      * Builds a new PawnsBoardRectangleCard instance.
      *
-     * @return the new Card
+     * @return the new {@link PawnsBoardRectangleCard}
      */
-    public Card build() {
+    public PawnsBoardRectangleCard build() {
       return new PawnsBoardRectangleCard(name, cost, value, influenceGrid);
     }
   }

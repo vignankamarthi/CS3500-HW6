@@ -1,11 +1,13 @@
-package cs3500.pawnsboard.model.card;
+package cs3500.pawnsboard.model.cards;
 
 import java.util.Arrays;
+import cs3500.pawnsboard.model.PawnsBoard;
+
 //TODO: Test this implementation
 /**
- * Cards for the PawnsBoardRectangle game that have a defined name, cost between 1 and 3 pawns,
+ * Cards for the {@link PawnsBoard} game that have a defined name, cost between 1 and 3 pawns,
  * a positive value, and an influence grid showing which cells are influenced and which are
- * not.
+ * not. Implements the {@link Card} interface.
  */
 public class PawnsBoardRectangleCard implements Card {
   private final String name;

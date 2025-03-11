@@ -2,7 +2,7 @@ package cs3500.pawnsboard.model;
 
 import java.util.List;
 
-import cs3500.pawnsboard.model.card.Card;
+import cs3500.pawnsboard.model.cards.Card;
 import cs3500.pawnsboard.model.exceptions.IllegalAccessException;
 import cs3500.pawnsboard.model.exceptions.IllegalCardException;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
@@ -14,7 +14,7 @@ import cs3500.pawnsboard.model.exceptions.InvalidDeckConfigurationException;
  * making player moves, retrieving game state, and determining the winner.
  *
  * <p>The Pawns Board game is a two-player card game played on a board
- * where players place cards from their hand onto cells with their pawns.
+ * where players place {@link Card}s from their hand onto cells with their pawns.
  * Cards influence cells based on their influence pattern.</p>
  *
  *
@@ -53,7 +53,7 @@ public interface PawnsBoard<C extends Card> {
    * @param startingHandSize the number of cards each player starts with
    * @throws IllegalArgumentException if any of the dimensional parameters are invalid
    * @throws IllegalArgumentException if the starting hand size is too large
-   * @throws InvalidDeckConfigurationException if deck configuration is invalid or cannot be read
+   * @throws {@link InvalidDeckConfigurationException} if deck configuration is invalid or cannot be read
    */
   void startGame(int rows, int cols, String deckConfigPath, int startingHandSize)
           throws IllegalArgumentException, InvalidDeckConfigurationException;
@@ -105,9 +105,9 @@ public interface PawnsBoard<C extends Card> {
    * @param col the column index where the card will be placed
    * @throws IllegalArgumentException if the coordinates are invalid
    * @throws IllegalStateException if the game hasn't been started or is already over
-   * @throws IllegalAccessException if the cell doesn't contain enough pawns for the card's cost
-   * @throws IllegalOwnerException if the pawns in the cell aren't owned by the current player
-   * @throws IllegalCardException if the card is not in the current player's hand
+   * @throws {@link IllegalAccessException} if the cell doesn't contain enough pawns for the card's cost
+   * @throws {@link IllegalOwnerException} if the pawns in the cell aren't owned by the current player
+   * @throws {@link IllegalCardException} if the card is not in the current player's hand
    */
   void placeCard(int cardIndex, int row, int col)
           throws IllegalArgumentException, IllegalStateException, IllegalAccessException,
@@ -147,7 +147,7 @@ public interface PawnsBoard<C extends Card> {
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
-   * @return a CellContent enum indicating whether the cell is empty, contains pawns, or a card
+   * @return a {@link CellContent} enum indicating whether the cell is empty, contains pawns, or a card
    * @throws IllegalArgumentException if the coordinates are invalid
    * @throws IllegalStateException if the game hasn't been started
    */
@@ -159,7 +159,7 @@ public interface PawnsBoard<C extends Card> {
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
-   * @return the Player who owns the cell's contents, or null if the cell is empty
+   * @return the {@link Player} who owns the cell's contents, or null if the cell is empty
    * @throws IllegalArgumentException if the coordinates are invalid
    * @throws IllegalStateException if the game hasn't been started
    */
