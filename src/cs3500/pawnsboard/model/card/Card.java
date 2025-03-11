@@ -43,4 +43,23 @@ public interface Card {
    * @return the influence grid as chars
    */
   char[][] getInfluenceGridAsChars();
+  
+  /**
+   * Determines if this card is equal to another object.
+   * Cards are equal if they have the same name, cost, value score, and influence grid.
+   *
+   * @param o the object to compare with
+   * @return true if equal, false otherwise
+   */
+  @Override
+  boolean equals(Object o);
+  
+  /**
+   * Returns a hash code value for the card.
+   * Consistent with equals: equal cards must have equal hash codes.
+   *
+   * @return a hash code value for this card
+   */
+  @Override
+  int hashCode();
 }

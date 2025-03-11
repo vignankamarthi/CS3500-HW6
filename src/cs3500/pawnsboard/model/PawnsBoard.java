@@ -7,6 +7,7 @@ import cs3500.pawnsboard.model.exceptions.IllegalAccessException;
 import cs3500.pawnsboard.model.exceptions.IllegalCardException;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 
+//TODO: Read through and confirm you followed model.
 /**
  * This interface represents the behaviors for the Pawns Board game.
  * It provides the functionality needed to play the game including initializing the game,
