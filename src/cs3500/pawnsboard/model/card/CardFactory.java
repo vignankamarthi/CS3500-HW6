@@ -2,7 +2,8 @@ package cs3500.pawnsboard.model.card;
 
 /**
  * Factory interface for creating Card objects.
- * Abstracts the card creation process from the reading logic.
+ * For every new type of card, add additional methods for every new type of card and create
+ * the corresponding Implementation.
  */
 public interface CardFactory {
   
@@ -15,5 +16,7 @@ public interface CardFactory {
    * @param influenceGrid the 5x5 influence grid for the card
    * @return a new Card instance
    */
-  Card createCard(String name, int cost, int value, char[][] influenceGrid);
+  Card createPawnsBoardCard(String name, int cost, int value, char[][] influenceGrid);
+
+  // Add new Card Type creation methods here:
 }

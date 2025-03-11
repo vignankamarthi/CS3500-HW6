@@ -79,7 +79,7 @@ public class PawnsBoardCardReader implements CardReader {
     char[][] influenceGrid = readInfluenceGrid(scanner);
     
     // Use the factory to create the card
-    return cardFactory.createCard(name, cost, value, influenceGrid);
+    return cardFactory.createPawnsBoardCard(name, cost, value, influenceGrid);
   }
   
   /**

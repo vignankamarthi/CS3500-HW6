@@ -13,40 +13,56 @@ import cs3500.pawnsboard.model.exceptions.InvalidDeckConfigurationException;
  * It provides the functionality needed to play the game including initializing the game,
  * making player moves, retrieving game state, and determining the winner.
  *
- * <p>The Pawns Board game is a two-player card game played on a rectangular board
+ * <p>The Pawns Board game is a two-player card game played on a board
  * where players place cards from their hand onto cells with their pawns.
- * Cards influence adjacent cells based on their influence pattern.</p>
+ * Cards influence cells based on their influence pattern.</p>
  *
- * <p>Documented INVARIANT: No cell ever contains more than 3 pawns. This is enforced during
- * initialization and maintained throughout the game when influence is applied.</p>
+ *
+ * <p>Different implementations of this interface may (just examples, list could go on):</p>
+ * <ul>
+ *   <li>Support different board configurations beyond rectangular</li>
+ *   <li>Implement alternative influence mechanics beyond the standard add/convert pawns</li>
+ *   <li>Provide different starting configurations for the board</li>
+ *   <li>Support various scoring strategies</li>
+ *   <li>Provide any sort of deck and hand sizes</li>
+ *   <li>...</li>
+ * </ul>
+ *
+ * //TODO: Document ONE OF THESE for the assignment instructions
+ * <p>Implementations must preserve these core INVARIANTS:</p>
+ * <ul>
+ *   <li>A cell can only contain one type of content (empty, pawns, or a card)</li>
+ *   <li>Cards are only placed in cells with enough pawns to cover their cost</li>
+ *   <li>Cards cannot be placed on cells with pawns owned by another player</li>
+ * </ul>
  */
-public interface PawnsBoard {
+public interface PawnsBoard<C extends Card> {
+
+  // -----------------------------------------------------------------------
+  // Game Setup and Management
+  // -----------------------------------------------------------------------
 
   /**
    * Initializes and starts a new game with the specified parameters.
-   * Sets up the board with rows and columns, initializes player decks from the deck config file,
-   * deals cards to each player's hand, and sets Red as the first player.
-   * The starting board has a single pawn in each cell of the first and last columns,
-   * belonging to the Red and Blue players respectively.
+   * Sets up the board with rows and columns, initializes player decks from the deck configuration
+   * file, deals cards to each player's hand, and sets the first player.
    *
-   * <p>INVARIANT: When placing initial pawns, no cell will ever exceed the maximum of 3 pawns.</p>
-   *
-   * @param rows the number of rows on the board (must be positive)
-   * @param cols the number of columns on the board (must be odd and greater than 1)
+   * @param rows the number of rows on the board
+   * @param cols the number of columns on the board
    * @param deckConfigPath path to the deck configuration file
-   * @param startingHandSize the number of cards each player starts with (cannot exceed 1/3 of deck
-   *                         size using integer division)
-   * @throws IllegalArgumentException if rows are not positive
-   * @throws IllegalArgumentException if columns are not odd and greater than 1
-   * @throws IllegalArgumentException starting hand size is too large
-   * @throws InvalidDeckConfigurationException if deck configuration is invalid
-   * @throws InvalidDeckConfigurationException if file cannot be read
+   * @param startingHandSize the number of cards each player starts with
+   * @throws IllegalArgumentException if any of the dimensional parameters are invalid
+   * @throws IllegalArgumentException if the starting hand size is too large
+   * @throws InvalidDeckConfigurationException if deck configuration is invalid or cannot be read
    */
-  void startGame(int rows, int cols, String deckConfigPath, int startingHandSize) 
-      throws IllegalArgumentException, InvalidDeckConfigurationException;
+  void startGame(int rows, int cols, String deckConfigPath, int startingHandSize)
+          throws IllegalArgumentException, InvalidDeckConfigurationException;
 
   /**
-   * Checks if the game has ended. The game ends when both players pass their turn in succession.
+   * Checks if the game has ended.
+   *
+   * <p>In the PawnsBoardRectangle implementation, the game ends when both players pass their turn
+   * in succession. Alternative implementations might define different ending conditions.</p>
    *
    * @return true if the game is over, false otherwise
    */
@@ -55,101 +71,115 @@ public interface PawnsBoard {
   /**
    * Gets the current player whose turn it is.
    *
-   * @return the current player: RED or BLUE
+   * @return the current player
    * @throws IllegalStateException if the game hasn't been started
    */
   Player getCurrentPlayer() throws IllegalStateException;
 
+  // -----------------------------------------------------------------------
+  // Player Actions
+  // -----------------------------------------------------------------------
+
   /**
-   * The current player draws a card from their deck. This happens automatically at the start of a
-   * turn.
-   * If there are no cards left in the deck, no card is drawn.
+   * The current player draws a card from their deck.
    *
-   * @throws IllegalStateException if the game hasn't been started
-   * @throws IllegalStateException if the game is already over
+   * <p>In the PawnsBoardRectangle implementation, this happens automatically at the start of a
+   * turn. If there are no cards left in the deck, no card is drawn.</p>
+   *
+   * @throws IllegalStateException if the game hasn't been started or is already over
    */
   void drawCard() throws IllegalStateException;
 
   /**
    * Places a card from the current player's hand onto the specified cell.
    * The cell must contain enough pawns owned by the current player to cover the card's cost.
-   * After placement, the card's influence will be applied to the board.
+   * After placement, the card's influence will be applied to the board according to the
+   * game's influence rules.
    *
-   * <p>INVARIANT: When applying card influence, no cell will ever exceed the maximum of
-   * 3 pawns.</p>
+   * <p>This is a core game action that may have implementation-specific influence effects.
+   * All implementations must ensure that no cell ever exceeds a certain number pawns
+   * when applying influence.</p>
    *
    * @param cardIndex the index of the card in the current player's hand
    * @param row the row index where the card will be placed
    * @param col the column index where the card will be placed
-   * @throws IllegalArgumentException if the row or column is out of bounds
-   * @throws IllegalStateException if the game hasn't been started
-   * @throws IllegalStateException if the game is already over
-   * @throws IllegalAccessException if the cell doesn't contain enough pawns to cover the card's
-   *                                cost
+   * @throws IllegalArgumentException if the coordinates are invalid
+   * @throws IllegalStateException if the game hasn't been started or is already over
+   * @throws IllegalAccessException if the cell doesn't contain enough pawns for the card's cost
    * @throws IllegalOwnerException if the pawns in the cell aren't owned by the current player
    * @throws IllegalCardException if the card is not in the current player's hand
    */
   void placeCard(int cardIndex, int row, int col)
-      throws IllegalArgumentException, IllegalStateException, IllegalAccessException,
-      IllegalOwnerException, IllegalCardException;
+          throws IllegalArgumentException, IllegalStateException, IllegalAccessException,
+          IllegalOwnerException, IllegalCardException;
 
   /**
-   * The current player passes their turn. Control passes to the other player.
-   * If both players pass consecutively, the game ends.
+   * The current player passes their turn, giving control to the other player.
    *
-   * @throws IllegalStateException if the game hasn't been started
-   * @throws IllegalStateException if the game is already over
-   * @throws IllegalOwnerException if it isn't the current player's turn
+   * <p>In the PawnsBoardRectangle implementation, if both players pass consecutively,
+   * the game ends.</p>
+   *
+   * @throws IllegalStateException if the game hasn't been started or is already over
+   * @throws IllegalOwnerException if there's an issue with turn control
    */
   void passTurn() throws IllegalStateException, IllegalOwnerException;
 
+
+  // -----------------------------------------------------------------------
+  // Board and Game State Queries
+  // -----------------------------------------------------------------------
+
   /**
-   * Gets the dimensions of the board as a 2-element array.
+   * Gets the dimensions of the board.
    *
-   * @return an array where the first element is the number of rows and the second is the
-   *         number of columns
+   * <p>In the PawnsBoardRectangle implementation, the board is a rectangle so the int array will have
+   * 2 values, first one being the width of the board, and second value being the height of the
+   * board.</p>
+   *
+   * @return an array where the elements represent some type of dimension depending on the shape of
+   * the board.
    * @throws IllegalStateException if the game hasn't been started
    */
   int[] getBoardDimensions() throws IllegalStateException;
 
   /**
-   * Gets the content of a cell on the board.
+   * Gets the content type of the given cell position on the board with the given dimensions
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
    * @return a CellContent enum indicating whether the cell is empty, contains pawns, or a card
-   * @throws IllegalArgumentException if the row or column is out of bounds
-   * @throws IllegalStateException if the game hasn't started
+   * @throws IllegalArgumentException if the coordinates are invalid
+   * @throws IllegalStateException if the game hasn't been started
    */
   CellContent getCellContent(int row, int col)
-      throws IllegalArgumentException, IllegalStateException;
+          throws IllegalArgumentException, IllegalStateException;
 
   /**
-   * Gets the owner of a cell's contents (pawns or card). If the cell is empty, returns null.
+   * Gets the owner of a cell's contents (pawns or card).
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
    * @return the Player who owns the cell's contents, or null if the cell is empty
-   * @throws IllegalArgumentException if the row or column is out of bounds
-   * @throws IllegalStateException if the game hasn't started
+   * @throws IllegalArgumentException if the coordinates are invalid
+   * @throws IllegalStateException if the game hasn't been started
    */
   Player getCellOwner(int row, int col)
-      throws IllegalArgumentException, IllegalStateException;
+          throws IllegalArgumentException, IllegalStateException;
 
   /**
    * Gets the number of pawns in a specified cell.
    *
-   * <p>INVARIANT: This method will never return a value greater than 3, as the game
-   * enforces a maximum of 3 pawns per cell.</p>
+   * <p>This method will never return a value greater than 3, in the PawnsBoardRectangle
+   * implementation.</p>
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
    * @return the number of pawns in the cell, or 0 if the cell is empty or contains a card
-   * @throws IllegalArgumentException if the row or column is out of bounds
-   * @throws IllegalStateException if the game hasn't started
+   * @throws IllegalArgumentException if the coordinates are invalid
+   * @throws IllegalStateException if the game hasn't been started
    */
   int getPawnCount(int row, int col)
-      throws IllegalArgumentException, IllegalStateException;
+          throws IllegalArgumentException, IllegalStateException;
 
   /**
    * Gets the cards in the specified player's hand.
@@ -158,7 +188,8 @@ public interface PawnsBoard {
    * @return a list of Card objects representing the player's hand
    * @throws IllegalStateException if the game hasn't been started
    */
-  List<Card> getPlayerHand(Player player) throws IllegalStateException;
+  List<C> getPlayerHand(Player player) throws IllegalStateException;
+
 
   /**
    * Gets the number of cards remaining in the specified player's deck.
@@ -169,53 +200,40 @@ public interface PawnsBoard {
    */
   int getRemainingDeckSize(Player player) throws IllegalStateException;
 
-
+  // -----------------------------------------------------------------------
+  // Scoring and Game Outcome
+  // -----------------------------------------------------------------------
 
   /**
    * Gets the row scores for both players for a specific row.
-   * The row score is calculated by summing the value scores of each player's cards on that row.
+   *
+   * <p>In the PawnsBoardRectangle implementation, the row score is calculated by summing the value
+   * scores of each player's cards on that row.</p>
    *
    * @param row the row index to calculate scores for
    * @return an array where the first element is Red's score for the row and the second is Blue's
    * @throws IllegalArgumentException if the row is out of bounds
-   * @throws IllegalStateException if the game hasn't started
+   * @throws IllegalStateException if the game hasn't been started
    */
   int[] getRowScores(int row) throws IllegalArgumentException, IllegalStateException;
 
   /**
    * Gets the total score for each player across all rows.
-   * For each row, the player with the higher row score adds that score to their total.
-   * If row scores are tied, neither player gets points.
+   *
+   * <p>In the PawnsBoardRectangle implementation, for each row, the player with the higher row score
+   * adds that score to their total. If row scores are tied, neither player gets points.
+   * Alternative implementations may use different scoring rules.</p>
    *
    * @return an array where the first element is Red's total score and the second is Blue's
-   * @throws IllegalStateException if the game hasn't started
+   * @throws IllegalStateException if the game hasn't been started
    */
   int[] getTotalScore() throws IllegalStateException;
 
   /**
    * Gets the winning player if the game is over.
    *
-   * @return the winning Player (RED or BLUE), null if the game is tied or not over yet
-   * @throws IllegalStateException if the game hasn't been started
-   * @throws IllegalStateException if the game is not over
+   * @return the winning Player (RED or BLUE), or null if the game is tied
+   * @throws IllegalStateException if the game hasn't been started or is not over
    */
   Player getWinner() throws IllegalStateException;
-
-  /**
-   * Gets the hand of the current player.
-   *
-   * @return a list of cards in the given player's hand
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  List<Card> getHand() throws IllegalStateException;
-
-  /**
-   * Removes the specified card from the current player's hand after it has been placed.
-   *
-   * @param cardIndex the index of the card to discard from the current player's hand
-   * @throws IllegalCardException if the card is not in the current player's hand
-   * @throws IllegalStateException if the game hasn't been started
-   * @throws IllegalStateException if the game is already over
-   */
-  void discardCard(int cardIndex) throws IllegalCardException, IllegalStateException;
 }
