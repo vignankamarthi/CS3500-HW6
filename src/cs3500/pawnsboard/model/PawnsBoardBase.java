@@ -35,7 +35,8 @@ import java.util.List;
  *
  * <p>Class invariants include:</p>
  * <ul>
- *   <li>The board dimensions remain fixed after game initialization</li>
+ *   <li>The board dimensions remain fixed after game initialization - 'rows' and 'columns' 
+ *       are set in startGame() and never modified by any other method (DOCUMENTED INVARIANT)</li>
  *   <li>A cell can only contain one type of content (empty, pawns, or a card)</li>
  *   <li>Cards are only placed in cells with enough pawns to cover their cost</li>
  *   <li>Cells never contain more than 3 pawns</li>
@@ -43,6 +44,7 @@ import java.util.List;
  *
  * @param <C> the type of Card used in this game
  */
+
 //TODO: Test this implementation
 
 public class PawnsBoardBase<C extends Card> 
@@ -99,6 +101,9 @@ public class PawnsBoardBase<C extends Card>
     validateBoardDimensions(rows, cols);
 
     // Set up board
+    // DOCUMENTED INVARIANT: Board dimensions (rows and columns) are set here and 
+    // never modified elsewhere, maintaining the invariant that board dimensions 
+    // remain fixed after initialization
     this.rows = rows;
     this.columns = cols;
     board = createEmptyBoard(rows, cols);
@@ -228,6 +233,8 @@ public class PawnsBoardBase<C extends Card>
   @Override
   public int[] getBoardDimensions() throws IllegalStateException {
     validateGameStarted();
+    // DOCUMENTED INVARIANT: This method returns the dimensions but doesn't modify them,
+    // helping maintain the invariant that dimensions remain fixed after initialization
     return new int[] {rows, columns};
   }
 
@@ -328,6 +335,9 @@ public class PawnsBoardBase<C extends Card>
    * @throws IllegalArgumentException if dimensions are invalid
    */
   private void validateBoardDimensions(int rows, int cols) {
+    // DOCUMENTED INVARIANT: This validation ensures that only valid dimensions
+    // are accepted when initializing the board, contributing to the board dimensions
+    // invariant by preventing invalid values from being set
     if (rows <= 0) {
       throw new IllegalArgumentException("Number of rows must be positive");
     }
