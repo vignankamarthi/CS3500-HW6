@@ -6,7 +6,7 @@ import cs3500.pawnsboard.model.cards.deckbuilder.PawnsBoardBaseCardDeckBuilder;
 import cs3500.pawnsboard.model.cell.PawnsBoardCell;
 import cs3500.pawnsboard.model.cell.PawnsBoardBaseCell;
 import cs3500.pawnsboard.model.enumerations.CellContent;
-import cs3500.pawnsboard.model.enumerations.Player;
+import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.exceptions.IllegalAccessException;
 import cs3500.pawnsboard.model.exceptions.IllegalCardException;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
@@ -44,9 +44,6 @@ import java.util.List;
  *
  * @param <C> the type of Card used in this game
  */
-
-//TODO: Test this implementation
-
 public class PawnsBoardBase<C extends Card> 
         extends AbstractPawnsBoard<C, PawnsBoardBaseCell<C>> {
 
@@ -144,7 +141,7 @@ public class PawnsBoardBase<C extends Card>
     initializeStartingBoard();
 
     // Set game state
-    currentPlayer = Player.RED;
+    currentPlayerColors = PlayerColors.RED;
     gameStarted = true;
     gameOver = false;
     lastPlayerPassed = false;
@@ -195,7 +192,7 @@ public class PawnsBoardBase<C extends Card>
     }
 
     // Check if the pawns are owned by the current player
-    if (targetCell.getOwner() != currentPlayer) {
+    if (targetCell.getOwner() != currentPlayerColors) {
       throw new IllegalOwnerException("Pawns in cell are not owned by current player");
     }
 
@@ -207,7 +204,7 @@ public class PawnsBoardBase<C extends Card>
     }
 
     // Place the card
-    targetCell.setCard(cardToPlace, currentPlayer);
+    targetCell.setCard(cardToPlace, currentPlayerColors);
 
     // Apply influence
     applyCardInfluence(cardToPlace, row, col);
@@ -261,12 +258,12 @@ public class PawnsBoardBase<C extends Card>
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
-   * @return the {@link Player} who owns the cell's contents, or null if the cell is empty
+   * @return the {@link PlayerColors} who owns the cell's contents, or null if the cell is empty
    * @throws IllegalArgumentException if the coordinates are invalid
    * @throws IllegalStateException if the game hasn't been started
    */
   @Override
-  public Player getCellOwner(int row, int col)
+  public PlayerColors getCellOwner(int row, int col)
           throws IllegalArgumentException, IllegalStateException {
     validateGameStarted();
     validateCoordinates(row, col);
@@ -381,12 +378,12 @@ public class PawnsBoardBase<C extends Card>
     try {
       // Add RED pawns to first column
       for (int r = 0; r < rows; r++) {
-        board.get(r).get(0).addPawn(Player.RED);
+        board.get(r).get(0).addPawn(PlayerColors.RED);
       }
 
       // Add BLUE pawns to last column
       for (int r = 0; r < rows; r++) {
-        board.get(r).get(columns - 1).addPawn(Player.BLUE);
+        board.get(r).get(columns - 1).addPawn(PlayerColors.BLUE);
       }
     } catch (IllegalOwnerException e) {
       // This should never happen during initialization with empty cells
@@ -409,7 +406,7 @@ public class PawnsBoardBase<C extends Card>
     int centerCol = 2;
 
     // For blue player, mirror the influence grid horizontally
-    if (!isPlayerRed(currentPlayer)) {
+    if (!isPlayerRed(currentPlayerColors)) {
       influenceGrid = mirrorInfluenceGrid(influenceGrid);
     }
 
@@ -474,18 +471,18 @@ public class PawnsBoardBase<C extends Card>
       switch (cell.getContent()) {
         case EMPTY:
           // Add a pawn of the current player
-          cell.addPawn(currentPlayer);
+          cell.addPawn(currentPlayerColors);
           break;
 
         case PAWNS:
-          if (cell.getOwner() == currentPlayer) {
+          if (cell.getOwner() == currentPlayerColors) {
             // Increase pawn count for current player (up to max 3)
             if (cell.getPawnCount() < 3) {
-              cell.addPawn(currentPlayer);
+              cell.addPawn(currentPlayerColors);
             }
           } else {
             // Convert ownership of pawns to current player
-            cell.changeOwnership(currentPlayer);
+            cell.changeOwnership(currentPlayerColors);
           }
           break;
 

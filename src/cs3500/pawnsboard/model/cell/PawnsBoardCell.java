@@ -2,7 +2,7 @@ package cs3500.pawnsboard.model.cell;
 
 import cs3500.pawnsboard.model.enumerations.CellContent;
 import cs3500.pawnsboard.model.PawnsBoard;
-import cs3500.pawnsboard.model.enumerations.Player;
+import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.cards.Card;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 
@@ -26,7 +26,7 @@ public interface PawnsBoardCell<C extends Card> {
    *
    * @return the player who owns the contents, or null if the cell is empty
    */
-  Player getOwner();
+  PlayerColors getOwner();
 
   /**
    * Gets the number of pawns in this cell.
@@ -45,12 +45,12 @@ public interface PawnsBoardCell<C extends Card> {
   /**
    * Adds a pawn to this cell. If the cell is empty, it becomes a pawn cell.
    *
-   * @param player the player who owns the pawn
+   * @param playerColors the playerColors who owns the pawn
    * @throws IllegalStateException if trying to add a pawn to a cell with a card
    * @throws IllegalStateException if the cell already has the maximum number of pawns
    * @throws IllegalOwnerException if trying to add a pawn of a different owner
    */
-  void addPawn(Player player) throws IllegalOwnerException;
+  void addPawn(PlayerColors playerColors) throws IllegalOwnerException;
 
   /**
    * Changes the ownership of pawns in this cell.
@@ -59,14 +59,14 @@ public interface PawnsBoardCell<C extends Card> {
    * @param newOwner the new owner of the pawns
    * @throws IllegalStateException if trying to change ownership of non-pawn content
    */
-  void changeOwnership(Player newOwner);
+  void changeOwnership(PlayerColors newOwner);
 
   /**
    * Places a card in this cell, replacing any pawns.
    * The cell's content becomes a card, and pawns are removed.
    *
    * @param card the card to place
-   * @param player the player who owns the card
+   * @param playerColors the playerColors who owns the card
    */
-  void setCard(C card, Player player);
+  void setCard(C card, PlayerColors playerColors);
 }

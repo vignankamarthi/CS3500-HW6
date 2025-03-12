@@ -3,7 +3,7 @@ package cs3500.pawnsboard.model.cell;
 import cs3500.pawnsboard.model.enumerations.CellContent;
 import cs3500.pawnsboard.model.PawnsBoard;
 import cs3500.pawnsboard.model.cards.Card;
-import cs3500.pawnsboard.model.enumerations.Player;
+import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 
 /**
@@ -19,10 +19,9 @@ import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
  *
  * @param <C> the type of Card that can be placed in this cell
  */
-//TODO: Test this implementation --File created
 public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
   private CellContent content;
-  private Player owner;
+  private PlayerColors owner;
   private int pawnCount;
   private C card;
   
@@ -52,7 +51,7 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
    * @return the player who owns the contents, or null if the cell is empty
    */
   @Override
-  public Player getOwner() {
+  public PlayerColors getOwner() {
     return owner;
   }
 
@@ -80,20 +79,20 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
    * Adds a pawn to this cell. If the cell is empty, it becomes a pawn cell.
    * The maximum number of pawns in a cell is 3 in this implementation.
    *
-   * @param player the player who owns the pawn
+   * @param playerColors the playerColors who owns the pawn
    * @throws IllegalStateException if trying to add a pawn to a cell with a card
    * @throws IllegalStateException if the cell already has the maximum number of pawns
    * @throws IllegalOwnerException if trying to add a pawn of a different owner
    */
   @Override
-  public void addPawn(Player player) throws IllegalOwnerException {
+  public void addPawn(PlayerColors playerColors) throws IllegalOwnerException {
     if (content == CellContent.CARD) {
       throw new IllegalStateException("Cannot add pawn to a cell containing a card");
     }
 
     if (content == CellContent.EMPTY) {
       content = CellContent.PAWNS;
-      owner = player;
+      owner = playerColors;
       pawnCount = 1;
     } else {
       // Cell already has pawns
@@ -101,7 +100,7 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
         throw new IllegalStateException("Cell already has maximum number of pawns");
       }
 
-      if (owner != player) {
+      if (owner != playerColors) {
         throw new IllegalOwnerException("Cannot add pawn of different owner");
       }
 
@@ -117,7 +116,7 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
    * @throws IllegalStateException if trying to change ownership of non-pawn content
    */
   @Override
-  public void changeOwnership(Player newOwner) {
+  public void changeOwnership(PlayerColors newOwner) {
     if (content != CellContent.PAWNS) {
       throw new IllegalStateException("Can only change ownership of pawns");
     }
@@ -130,12 +129,12 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
    * The cell's content becomes a card, and pawns are removed.
    *
    * @param card the card to place
-   * @param player the player who owns the card
+   * @param playerColors the playerColors who owns the card
    */
   @Override
-  public void setCard(C card, Player player) {
+  public void setCard(C card, PlayerColors playerColors) {
     this.content = CellContent.CARD;
-    this.owner = player;
+    this.owner = playerColors;
     this.card = card;
     this.pawnCount = 0;
   }

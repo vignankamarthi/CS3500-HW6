@@ -5,15 +5,15 @@ import java.util.List;
 import cs3500.pawnsboard.model.cards.Card;
 import cs3500.pawnsboard.model.cell.PawnsBoardCell;
 import cs3500.pawnsboard.model.enumerations.CellContent;
-import cs3500.pawnsboard.model.enumerations.Player;
+import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.exceptions.IllegalAccessException;
 import cs3500.pawnsboard.model.exceptions.IllegalCardException;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 import cs3500.pawnsboard.model.exceptions.InvalidDeckConfigurationException;
-//TODO: Create a README File for the ENTIRE PROJECT
-//TODO: Attempt to create a user-player interface that, in the future, allows for user OR AI player implementations
-//TODO: Create a document envisioning how you to implement the user AND AI player models
+
+//TODO: Create a user-player interface that, in the future, allows for user OR AI player implementations
 //TODO: Create document for how I envision instantiating user-player for AI and human player differentiation
+//TODO: Create a README File for the ENTIRE PROJECT
 /**
  * This interface represents the behaviors for the Pawns Board game.
  * It provides the functionality needed to play the game including initializing the game,
@@ -84,10 +84,10 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
    * @return the current player
    * @throws IllegalStateException if the game hasn't been started
    */
-  Player getCurrentPlayer() throws IllegalStateException;
+  PlayerColors getCurrentPlayer() throws IllegalStateException;
 
   // -----------------------------------------------------------------------
-  // Player Actions
+  // PlayerColors Actions
   // -----------------------------------------------------------------------
 
   /**
@@ -159,11 +159,11 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
-   * @return the {@link Player} who owns the cell's contents, or null if the cell is empty
+   * @return the {@link PlayerColors} who owns the cell's contents, or null if the cell is empty
    * @throws IllegalArgumentException if the coordinates are invalid
    * @throws IllegalStateException if the game hasn't been started
    */
-  Player getCellOwner(int row, int col)
+  PlayerColors getCellOwner(int row, int col)
           throws IllegalArgumentException, IllegalStateException;
 
   /**
@@ -182,23 +182,23 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
           throws IllegalArgumentException, IllegalStateException;
 
   /**
-   * Gets the cards in the specified player's hand.
+   * Gets the cards in the specified playerColors's hand.
    *
-   * @param player the player whose hand to retrieve
-   * @return a list of Card objects representing the player's hand
+   * @param playerColors the playerColors whose hand to retrieve
+   * @return a list of Card objects representing the playerColors's hand
    * @throws IllegalStateException if the game hasn't been started
    */
-  List<C> getPlayerHand(Player player) throws IllegalStateException;
+  List<C> getPlayerHand(PlayerColors playerColors) throws IllegalStateException;
 
 
   /**
-   * Gets the number of cards remaining in the specified player's deck.
+   * Gets the number of cards remaining in the specified playerColors's deck.
    *
-   * @param player the player whose deck size to retrieve
-   * @return the number of cards left in the player's deck
+   * @param playerColors the playerColors whose deck size to retrieve
+   * @return the number of cards left in the playerColors's deck
    * @throws IllegalStateException if the game hasn't been started
    */
-  int getRemainingDeckSize(Player player) throws IllegalStateException;
+  int getRemainingDeckSize(PlayerColors playerColors) throws IllegalStateException;
 
   // -----------------------------------------------------------------------
   // Scoring and Game Outcome
@@ -232,8 +232,8 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
   /**
    * Gets the winning player if the game is over.
    *
-   * @return the winning Player (RED or BLUE), or null if the game is tied
+   * @return the winning PlayerColors (RED or BLUE), or null if the game is tied
    * @throws IllegalStateException if the game hasn't been started or is not over
    */
-  Player getWinner() throws IllegalStateException;
+  PlayerColors getWinner() throws IllegalStateException;
 }

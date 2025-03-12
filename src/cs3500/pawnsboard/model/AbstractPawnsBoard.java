@@ -2,7 +2,7 @@ package cs3500.pawnsboard.model;
 
 import cs3500.pawnsboard.model.cards.Card;
 import cs3500.pawnsboard.model.cell.PawnsBoardCell;
-import cs3500.pawnsboard.model.enumerations.Player;
+import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 
 import java.util.ArrayList;
@@ -33,14 +33,14 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
   // Game state
   protected boolean gameStarted;
   protected boolean gameOver;
-  protected Player currentPlayer;
+  protected PlayerColors currentPlayerColors;
   protected boolean lastPlayerPassed;
 
   // Board state - part of the grid representation invariant
   protected int rows;
   protected int columns;
 
-  // Player decks and hands
+  // PlayerColors decks and hands
   protected List<C> redDeck;
   protected List<C> blueDeck;
   protected List<C> redHand;
@@ -66,9 +66,9 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
    * @throws IllegalStateException if the game hasn't been started
    */
   @Override
-  public Player getCurrentPlayer() throws IllegalStateException {
+  public PlayerColors getCurrentPlayer() throws IllegalStateException {
     validateGameStarted();
-    return currentPlayer;
+    return currentPlayerColors;
   }
 
   /**
@@ -114,40 +114,40 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
   }
 
   /**
-   * Gets the cards in the specified player's hand.
+   * Gets the cards in the specified playerColors's hand.
    *
-   * @param player the player whose hand to retrieve
-   * @return a list of Card objects representing the player's hand
+   * @param playerColors the playerColors whose hand to retrieve
+   * @return a list of Card objects representing the playerColors's hand
    * @throws IllegalStateException if the game hasn't been started
    */
   @Override
-  public List<C> getPlayerHand(Player player) throws IllegalStateException {
+  public List<C> getPlayerHand(PlayerColors playerColors) throws IllegalStateException {
     validateGameStarted();
 
-    if (player == null) {
-      throw new IllegalArgumentException("Player cannot be null");
+    if (playerColors == null) {
+      throw new IllegalArgumentException("PlayerColors cannot be null");
     }
 
     // Return a defensive copy of the hand
-    return new ArrayList<>((isPlayerRed(player)) ? redHand : blueHand);
+    return new ArrayList<>((isPlayerRed(playerColors)) ? redHand : blueHand);
   }
 
   /**
-   * Gets the number of cards remaining in the specified player's deck.
+   * Gets the number of cards remaining in the specified playerColors's deck.
    *
-   * @param player the player whose deck size to retrieve
-   * @return the number of cards left in the player's deck
+   * @param playerColors the playerColors whose deck size to retrieve
+   * @return the number of cards left in the playerColors's deck
    * @throws IllegalStateException if the game hasn't been started
    */
   @Override
-  public int getRemainingDeckSize(Player player) throws IllegalStateException {
+  public int getRemainingDeckSize(PlayerColors playerColors) throws IllegalStateException {
     validateGameStarted();
 
-    if (player == null) {
-      throw new IllegalArgumentException("Player cannot be null");
+    if (playerColors == null) {
+      throw new IllegalArgumentException("PlayerColors cannot be null");
     }
 
-    return isPlayerRed(player) ? redDeck.size() : blueDeck.size();
+    return isPlayerRed(playerColors) ? redDeck.size() : blueDeck.size();
   }
 
   /**
@@ -184,11 +184,11 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
   /**
    * Gets the winning player if the game is over.
    *
-   * @return the winning Player (RED or BLUE), or null if the game is tied
+   * @return the winning PlayerColors (RED or BLUE), or null if the game is tied
    * @throws IllegalStateException if the game hasn't been started or is not over
    */
   @Override
-  public Player getWinner() throws IllegalStateException {
+  public PlayerColors getWinner() throws IllegalStateException {
     validateGameStarted();
 
     if (!gameOver) {
@@ -200,9 +200,9 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
     int blueScore = scores[1];
 
     if (redScore > blueScore) {
-      return Player.RED;
+      return PlayerColors.RED;
     } else if (blueScore > redScore) {
-      return Player.BLUE;
+      return PlayerColors.BLUE;
     } else {
       return null; // Tie
     }
@@ -212,7 +212,7 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
    * Switches the current player to the other player.
    */
   protected void switchPlayer() {
-    currentPlayer = isPlayerRed(currentPlayer) ? Player.BLUE : Player.RED;
+    currentPlayerColors = isPlayerRed(currentPlayerColors) ? PlayerColors.BLUE : PlayerColors.RED;
   }
 
   /**
@@ -259,7 +259,7 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
    * @return the current player's deck
    */
   protected List<C> getCurrentPlayerDeck() {
-    return isPlayerRed(currentPlayer) ? redDeck : blueDeck;
+    return isPlayerRed(currentPlayerColors) ? redDeck : blueDeck;
   }
 
   /**
@@ -268,16 +268,16 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
    * @return the current player's hand
    */
   protected List<C> getCurrentPlayerHand() {
-    return isPlayerRed(currentPlayer) ? redHand : blueHand;
+    return isPlayerRed(currentPlayerColors) ? redHand : blueHand;
   }
   
   /**
-   * Checks if the given player is the RED player.
+   * Checks if the given playerColors is the RED playerColors.
    *
-   * @param player the player to check
-   * @return true if the player is RED, false otherwise
+   * @param playerColors the playerColors to check
+   * @return true if the playerColors is RED, false otherwise
    */
-  protected boolean isPlayerRed(Player player) {
-    return player == Player.RED;
+  protected boolean isPlayerRed(PlayerColors playerColors) {
+    return playerColors == PlayerColors.RED;
   }
 }
