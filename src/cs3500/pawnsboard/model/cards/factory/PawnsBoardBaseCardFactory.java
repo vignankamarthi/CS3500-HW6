@@ -7,7 +7,7 @@ import cs3500.pawnsboard.model.cards.PawnsBoardBaseCard;
  * Implementation of {@link CardFactory} for {@link PawnsBoardBaseCard}s in the Pawns Board game.
  * Creates card objects based on provided parameters using a method chaining approach.
  */
-//TODO: Test this implementation
+//TODO: Test this implementation --File created
 public class PawnsBoardBaseCardFactory implements CardFactory<PawnsBoardBaseCard> {
   
   /**

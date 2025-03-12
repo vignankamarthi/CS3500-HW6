@@ -19,7 +19,7 @@ import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
  *
  * @param <C> the type of Card that can be placed in this cell
  */
-//TODO: Test this implementation
+//TODO: Test this implementation --File created
 public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
   private CellContent content;
   private Player owner;

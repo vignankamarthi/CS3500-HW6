@@ -14,7 +14,7 @@ import java.util.Scanner;
  * configuration files for the Pawns Board game.
  * Uses the factory method pattern to create card objects.
  */
-//TODO: Test this implementation
+//TODO: Test this implementation --File created
 public class PawnsBoardBaseCardReader implements CardReader<PawnsBoardBaseCard> {
   
   private final CardFactory<PawnsBoardBaseCard> cardFactory;

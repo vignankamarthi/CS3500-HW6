@@ -9,7 +9,7 @@ import cs3500.pawnsboard.model.PawnsBoard;
  * a positive value, and an influence grid showing which cells are influenced and which are
  * not. Implements the {@link Card} interface.
  */
-//TODO: Test this implementation
+//TODO: Test this implementation --File created
 public class PawnsBoardBaseCard implements Card {
   private final String name;
   private final int cost;
