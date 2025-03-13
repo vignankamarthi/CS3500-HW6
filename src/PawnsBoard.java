@@ -26,13 +26,10 @@ public class PawnsBoard {
 
   public static void main(String[] args) {
     try {
-      // Set up the game
       Object[] components = setupGame();
-      PawnsBoardBase<PawnsBoardBaseCard> model = 
-              (PawnsBoardBase<PawnsBoardBaseCard>) components[0];
-      PawnsBoardTextualView<PawnsBoardBaseCard> view = 
+      PawnsBoardBase<PawnsBoardBaseCard> model = (PawnsBoardBase<PawnsBoardBaseCard>) components[0];
+      PawnsBoardTextualView<PawnsBoardBaseCard> view =
               (PawnsBoardTextualView<PawnsBoardBaseCard>) components[1];
-
       executeMove(model, view, 0, 0, 0,
               "RED places Security at (0,0)");
       executeMove(model, view, 0, 0, 4,
@@ -59,16 +56,22 @@ public class PawnsBoard {
               "BLUE places CenterPawn at (2,3)");
       executeMove(model, view, 0, 0, 2,
               "RED places CrossPawn at (0,2)");
-      executeMove(model, view, 0, 1, 2,
+      executeMove(model, view, 1, 1, 2,
               "BLUE places DiagonalPawn at (1,2)");
-      executeMove(model, view, 0, 2, 2,
+      executeMove(model, view, 2, 2, 2,
               "RED places CornerPawn at (2,2)");
-
-
-
+      executeMove(model, view, 0, 0, 2,
+              "BLUE places CrossPawn at (0,2)");
+      executeMove(model, view, 3, 2, 2,
+              "RED places Shield at (2,2)");
+      executeMove(model, view, 0, 2, 2,
+              "BLUE places CornerPawn at (2,2)");
+      executeMove(model, view, 0, 2, 2,
+              "RED places CrossPawn at (2,2)");
+      executeMove(model, view, 0, 2, 2,
+              "BLUE places CornerPawn at (2,2)");
     } catch (InvalidDeckConfigurationException e) {
-      System.err.println("Error during game setup: " + e.getMessage());
-      e.printStackTrace();
+      System.out.println("Error during game setup: " + e.getMessage());
     }
   }
 
