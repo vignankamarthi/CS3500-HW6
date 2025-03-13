@@ -12,6 +12,7 @@ import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
  * 
  * @param <C> the type of Card that can be placed in this cell
  */
+//TODO: Is this generic needed?
 public interface PawnsBoardCell<C extends Card> {
 
   /**

@@ -81,6 +81,64 @@ public class PawnsBoardTextualView<C extends Card> implements PawnsBoardView {
   }
   
   /**
+   * Renders a comprehensive view of the game state including:
+   * - Current game status (started, in progress, over)
+   * - Current player
+   * - Board state
+   * - Game results if the game is over
+   *
+   * @return a complete representation of the game state
+   */
+  public String renderGameState() {
+    if (!isGameStarted()) {
+      return "Game has not been started";
+    }
+    
+    StringBuilder gameState = new StringBuilder();
+    
+    // Add current player information
+    PlayerColors currentPlayer = model.getCurrentPlayer();
+    gameState.append("Current Player: ").append(currentPlayer).append("\n");
+    
+    // Add the board representation
+    gameState.append(this).append("\n");
+    
+    // Add game results if the game is over
+    if (model.isGameOver()) {
+      gameState.append("Game is over\n");
+      
+      // Add score information
+      int[] scores = model.getTotalScore();
+      gameState.append("RED score: ").append(scores[0]).append("\n");
+      gameState.append("BLUE score: ").append(scores[1]).append("\n");
+      
+      // Add winner information
+      PlayerColors winner = model.getWinner();
+      if (winner != null) {
+        gameState.append("Winner: ").append(winner);
+      } else {
+        gameState.append("Game ended in a tie!");
+      }
+    }
+    
+    return gameState.toString();
+  }
+  
+  /**
+   * Renders the game state with a custom message header.
+   * Useful for indicating specific events like game start or player actions.
+   *
+   * @param headerMessage the message to display as a header
+   * @return a string with the header and game state
+   */
+  public String renderGameState(String headerMessage) {
+    StringBuilder result = new StringBuilder();
+    result.append("--- ").append(headerMessage).append(" ---\n");
+    result.append(renderGameState());
+    return result.toString();
+  }
+  
+  /**
    * Renders a single cell based on its content.
    *
    * @param row the row of the cell

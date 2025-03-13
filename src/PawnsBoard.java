@@ -18,7 +18,8 @@ public class PawnsBoard {
 
   /**
    * Main method that demonstrates the functionality of the PawnsBoard model.
-   * It initializes a game, places cards, and shows the textual output at each step.
+   * It initializes a game, plays a sequence of moves, and displays the game state after each action
+   * using the textual view.
    *
    * @param args command line arguments (not used)
    */
@@ -36,73 +37,84 @@ public class PawnsBoard {
       // Create the view
       PawnsBoardTextualView<PawnsBoardBaseCard> view = new PawnsBoardTextualView<>(model);
       
-      // Print initial game state
-      System.out.println("=== Game Start ===");
-      System.out.println("Current Player: " + model.getCurrentPlayer());
-      System.out.println(view.toString());
+      // Display initial game state
+      System.out.println(view.renderGameState("Game Start"));
       System.out.println();
       
       // RED places a card at position (0,0)
-      System.out.println("=== RED places a card at (0,0) ===");
-      model.placeCard(0, 0, 0);
-      System.out.println("Current Player: " + model.getCurrentPlayer());
-      System.out.println(view.toString());
+      model.placeCard(0, 0, 0); // Using the first card (Security, cost 1)
+      System.out.println(view.renderGameState("RED places a card at (0,0)"));
       System.out.println();
       
       // BLUE places a card at position (0,4)
-      System.out.println("=== BLUE places a card at (0,4) ===");
-      model.placeCard(0, 0, 4);
-      System.out.println("Current Player: " + model.getCurrentPlayer());
-      System.out.println(view.toString());
+      model.placeCard(0, 0, 4); // Using the first card (Security, cost 1)
+      System.out.println(view.renderGameState("BLUE places a card at (0,4)"));
       System.out.println();
       
       // RED places a card at position (1,0)
-      System.out.println("=== RED places a card at (1,0) ===");
-      model.placeCard(0, 1, 0);
-      System.out.println("Current Player: " + model.getCurrentPlayer());
-      System.out.println(view.toString());
+      model.placeCard(1, 1, 0); // Using the second card (Shield, cost 2)
+      System.out.println(view.renderGameState("RED places a card at (1,0)"));
       System.out.println();
       
       // BLUE places a card at position (1,4)
-      System.out.println("=== BLUE places a card at (1,4) ===");
-      model.placeCard(0, 1, 4);
-      System.out.println("Current Player: " + model.getCurrentPlayer());
-      System.out.println(view.toString());
+      model.placeCard(1, 1, 4); // Using the second card (Shield, cost 2)
+      System.out.println(view.renderGameState("BLUE places a card at (1,4)"));
       System.out.println();
       
       // RED places a card at position (2,0)
-      System.out.println("=== RED places a card at (2,0) ===");
-      model.placeCard(0, 2, 0);
-      System.out.println("Current Player: " + model.getCurrentPlayer());
-      System.out.println(view.toString());
+      model.placeCard(1, 2, 0); // Using the second card (avoiding Sword at index 2 which costs 3)
+      System.out.println(view.renderGameState("RED places a card at (2,0)"));
       System.out.println();
       
-      // BLUE passes turn
-      System.out.println("=== BLUE passes turn ===");
-      model.passTurn();
-      System.out.println("Current Player: " + model.getCurrentPlayer());
-      System.out.println(view.toString());
+      // BLUE places a card at position (2,4)
+      model.placeCard(1, 2, 4); // Using the second card
+      System.out.println(view.renderGameState("BLUE places a card at (2,4)"));
       System.out.println();
       
-      // RED passes turn, which should end the game
-      System.out.println("=== RED passes turn ===");
-      model.passTurn();
-      System.out.println("Game Over: " + model.isGameOver());
-      System.out.println(view.toString());
-      System.out.println();
+      // Try placing cards in middle positions or pass if not possible
+      boolean success = false;
       
-      // Print game results
-      System.out.println("=== Game Results ===");
-      int[] totalScores = model.getTotalScore();
-      System.out.println("RED score: " + totalScores[0]);
-      System.out.println("BLUE score: " + totalScores[1]);
-      
-      PlayerColors winner = model.getWinner();
-      if (winner != null) {
-        System.out.println("Winner: " + winner);
-      } else {
-        System.out.println("Game ended in a tie!");
+      // RED's turn - Try to place card in middle or pass
+      try {
+        model.placeCard(2, 0, 1); // Try to place at (0,1)
+        success = true;
+      } catch (Exception e) {
+        model.passTurn();
       }
+      
+      if (success) {
+        System.out.println(view.renderGameState("RED places a card at (0,1)"));
+      } else {
+        System.out.println(view.renderGameState("RED passes turn"));
+      }
+      System.out.println();
+      
+      // Reset success flag
+      success = false;
+      
+      // BLUE's turn - Try to place card in middle or pass
+      try {
+        model.placeCard(2, 0, 3); // Try to place at (0,3)
+        success = true;
+      } catch (Exception e) {
+        model.passTurn();
+      }
+      
+      if (success) {
+        System.out.println(view.renderGameState("BLUE places a card at (0,3)"));
+      } else {
+        System.out.println(view.renderGameState("BLUE passes turn"));
+      }
+      System.out.println();
+      
+      // RED passes turn
+      model.passTurn();
+      System.out.println(view.renderGameState("RED passes turn"));
+      System.out.println();
+      
+      // BLUE passes turn to end the game
+      model.passTurn();
+      System.out.println(view.renderGameState("Game Results"));
       
     } catch (InvalidDeckConfigurationException | IllegalAccessException 
             | IllegalCardException | IllegalOwnerException e) {

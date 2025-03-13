@@ -154,6 +154,9 @@ public class PawnsBoardBase<C extends Card>
    * After placement, the card's influence will be applied to the board according to the
    * game's influence rules.
    *
+   * <p>The row and column indices are based off of (0,0) being the top left space on the board.
+   * Additionally, the card index is 0 to handSize - 1.</p>
+   *
    * <p>In this implementation, influence spreads according to the card's influence grid, adding
    * pawns to empty cells, increasing pawn count for owned pawns, and changing ownership of
    * opponent's pawns.</p>
