@@ -5,6 +5,7 @@ import cs3500.pawnsboard.model.enumerations.CellContent;
 import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.cards.Card;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -108,21 +109,27 @@ public class PawnsBoardTextualView<C extends Card> implements PawnsBoardView {
     if (!isGameStarted()) {
       return "";
     }
-    
+
     List<C> hand = model.getPlayerHand(player);
     if (hand.isEmpty()) {
       return player + "'s hand is empty";
     }
-    
+
     StringBuilder handStr = new StringBuilder();
     handStr.append(player).append("'s hand:\n");
-    
+
     for (int i = 0; i < hand.size(); i++) {
       C card = hand.get(i);
-      handStr.append(String.format("%d: %s (Cost: %d, Value: %d)\n", 
+      handStr.append(String.format("%d: %s (Cost: %d, Value: %d)\n",
               i + 1, card.getName(), card.getCost(), card.getValue()));
+
+      char[][] influenceGrid = card.getInfluenceGridAsChars();
+      for (char[] row : influenceGrid) {
+        handStr.append("   ").append(new String(row)).append("\n");
+      }
+      handStr.append("\n"); // Extra newline between cards
     }
-    
+
     return handStr.toString();
   }
   
@@ -185,6 +192,12 @@ public class PawnsBoardTextualView<C extends Card> implements PawnsBoardView {
     StringBuilder result = new StringBuilder();
     result.append("--- ").append(headerMessage).append(" ---\n");
     result.append(renderGameState());
+
+    // Add a long separator line
+    result.append("\n")
+            .append(String.join("", Collections.nCopies(50, "-")))
+            .append("\n\n");
+
     return result.toString();
   }
   

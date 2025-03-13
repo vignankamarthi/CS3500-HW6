@@ -192,16 +192,18 @@ public class PawnsBoardTextualViewTest {
   @Test
   public void testRenderGameState_WithHeader() {
     mockModel.setupInitialBoard()
-             .setCurrentPlayer(PlayerColors.RED);
-    
+            .setCurrentPlayer(PlayerColors.RED);
+
     String output = view.renderGameState("Game Start");
     String expected = "--- Game Start ---\n"
-                    + "Current Player: RED\n\n"
-                    + "RED's hand is empty\n"
-                    + "0 1r __ __ __ 1b 0\n"
-                    + "0 1r __ __ __ 1b 0\n"
-                    + "0 1r __ __ __ 1b 0\n";
-    
+            + "Current Player: RED\n\n"
+            + "RED's hand is empty\n"
+            + "0 1r __ __ __ 1b 0\n"
+            + "0 1r __ __ __ 1b 0\n"
+            + "0 1r __ __ __ 1b 0\n"
+            + "\n"
+            + "--------------------------------------------------\n\n";
+
     assertEquals(expected, output);
   }
   
@@ -211,22 +213,23 @@ public class PawnsBoardTextualViewTest {
   @Test
   public void testRenderGameState_GameOverTie() {
     mockModel.setupInitialBoard()
-             .setGameOver(true)
-             .setTotalScore(0, 0)
-             .setWinner(null); // Tie game
-    
+            .setGameOver(true)
+            .setTotalScore(0, 0)
+            .setWinner(null); // Tie game
+
     String output = view.renderGameState("Game Results");
     String expected = "--- Game Results ---\n"
-                    + "Current Player: RED\n\n"
-                    + "RED's hand is empty\n"
-                    + "0 1r __ __ __ 1b 0\n"
-                    + "0 1r __ __ __ 1b 0\n"
-                    + "0 1r __ __ __ 1b 0\n"
-                    + "Game is over\n"
-                    + "RED score: 0\n"
-                    + "BLUE score: 0\n"
-                    + "Game ended in a tie!";
-    
+            + "Current Player: RED\n\n"
+            + "RED's hand is empty\n"
+            + "0 1r __ __ __ 1b 0\n"
+            + "0 1r __ __ __ 1b 0\n"
+            + "0 1r __ __ __ 1b 0\n"
+            + "Game is over\n"
+            + "RED score: 0\n"
+            + "BLUE score: 0\n"
+            + "Game ended in a tie!\n"
+            + "--------------------------------------------------\n\n";
+
     assertEquals(expected, output);
   }
   
@@ -250,7 +253,8 @@ public class PawnsBoardTextualViewTest {
                     + "Game is over\n"
                     + "RED score: 5\n"
                     + "BLUE score: 3\n"
-                    + "Winner: RED";
+                    + "Winner: RED\n"
+            + "--------------------------------------------------\n\n";
     
     assertEquals(expected, output);
   }
@@ -261,23 +265,33 @@ public class PawnsBoardTextualViewTest {
   @Test
   public void testRenderPlayerHand_WithCards() {
     mockModel.setupInitialBoard();
-    
+
     // Create test cards
     PawnsBoardBaseCard card1 = new PawnsBoardBaseCard("Card1", 1, 2, emptyInfluence);
     PawnsBoardBaseCard card2 = new PawnsBoardBaseCard("Card2", 2, 3, emptyInfluence);
-    
+
     // Create hand
     List<PawnsBoardBaseCard> redHand = new ArrayList<>();
     redHand.add(card1);
     redHand.add(card2);
-    
+
     mockModel.setPlayerHand(PlayerColors.RED, redHand);
-    
+
     String output = view.renderPlayerHand(PlayerColors.RED);
     String expected = "RED's hand:\n"
-                    + "1: Card1 (Cost: 1, Value: 2)\n"
-                    + "2: Card2 (Cost: 2, Value: 3)\n";
-    
+            + "1: Card1 (Cost: 1, Value: 2)\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n"
+            + "   XXCXX\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n\n"
+            + "2: Card2 (Cost: 2, Value: 3)\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n"
+            + "   XXCXX\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n\n";
+
     assertEquals(expected, output);
   }
   
@@ -302,23 +316,196 @@ public class PawnsBoardTextualViewTest {
   public void testRenderCurrentPlayerHand() {
     mockModel.setupInitialBoard();
     mockModel.setCurrentPlayer(PlayerColors.BLUE);
-    
+
     // Create test cards
     PawnsBoardBaseCard card1 = new PawnsBoardBaseCard("Card1", 1, 2, emptyInfluence);
     PawnsBoardBaseCard card2 = new PawnsBoardBaseCard("Card2", 2, 3, emptyInfluence);
-    
+
     // Create hand
     List<PawnsBoardBaseCard> blueHand = new ArrayList<>();
     blueHand.add(card1);
     blueHand.add(card2);
-    
+
     mockModel.setPlayerHand(PlayerColors.BLUE, blueHand);
-    
+
     String output = view.renderCurrentPlayerHand();
     String expected = "BLUE's hand:\n"
-                    + "1: Card1 (Cost: 1, Value: 2)\n"
-                    + "2: Card2 (Cost: 2, Value: 3)\n";
-    
+            + "1: Card1 (Cost: 1, Value: 2)\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n"
+            + "   XXCXX\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n\n"
+            + "2: Card2 (Cost: 2, Value: 3)\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n"
+            + "   XXCXX\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n\n";
+
     assertEquals(expected, output);
   }
+
+
+  /**
+   * Tests rendering a player's hand with a single card that has a specific influence grid.
+   * Verifies that:
+   * - The card's basic information (name, cost, value) is correctly displayed
+   * - The influence grid is accurately represented with 'X' for non-influenced cells
+   * - Specific influence cells are marked with 'I'
+   * - The grid is indented with 3 spaces
+   * - There's a newline between cards
+   */
+  @Test
+  public void testRenderPlayerHand_WithInfluenceGrid() {
+    mockModel.setupInitialBoard();
+
+    boolean[][] influenceGrid = new boolean[5][5];
+    influenceGrid[1][2] = true;  // Influence at (1,2)
+    influenceGrid[2][1] = true;  // Influence at (2,1)
+
+    PawnsBoardBaseCard card = new PawnsBoardBaseCard("InfluenceCard", 1, 2, influenceGrid);
+
+    List<PawnsBoardBaseCard> redHand = new ArrayList<>();
+    redHand.add(card);
+
+    mockModel.setPlayerHand(PlayerColors.RED, redHand);
+
+    String output = view.renderPlayerHand(PlayerColors.RED);
+    String expected = "RED's hand:\n"
+            + "1: InfluenceCard (Cost: 1, Value: 2)\n"
+            + "   XXXXX\n"
+            + "   XXIXX\n"
+            + "   XICXX\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n\n";
+
+    assertEquals(expected, output);
+  }
+
+
+  /**
+   * Tests rendering a player's hand with a single card that has a specific influence grid.
+   * Verifies that:
+   * - The card's basic information (name, cost, value) is correctly displayed
+   * - The influence grid is accurately represented with 'X' for non-influenced cells
+   * - Specific influence cells are marked with 'I'
+   * - The grid is indented with 3 spaces
+   * - There's a newline between cards
+   */
+  @Test
+  public void testRenderPlayerHand_MultipleCardsWithInfluenceGrids() {
+    mockModel.setupInitialBoard();
+
+    boolean[][] influenceGrid1 = new boolean[5][5];
+    influenceGrid1[1][2] = true;
+
+    boolean[][] influenceGrid2 = new boolean[5][5];
+    influenceGrid2[2][1] = true;
+    influenceGrid2[2][3] = true;
+
+    PawnsBoardBaseCard card1 = new PawnsBoardBaseCard("Card1", 1, 2, influenceGrid1);
+    PawnsBoardBaseCard card2 = new PawnsBoardBaseCard("Card2", 2, 3, influenceGrid2);
+
+    List<PawnsBoardBaseCard> redHand = new ArrayList<>();
+    redHand.add(card1);
+    redHand.add(card2);
+
+    mockModel.setPlayerHand(PlayerColors.RED, redHand);
+
+    String output = view.renderPlayerHand(PlayerColors.RED);
+    String expected = "RED's hand:\n"
+            + "1: Card1 (Cost: 1, Value: 2)\n"
+            + "   XXXXX\n"
+            + "   XXIXX\n"
+            + "   XXCXX\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n\n"
+            + "2: Card2 (Cost: 2, Value: 3)\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n"
+            + "   XICIX\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n\n";
+
+    assertEquals(expected, output);
+  }
+
+
+  /**
+   * Tests rendering a card with almost all cells influenced (except the center cell).
+   * Verifies that:
+   * - A card with widespread influence is correctly represented
+   * - The center cell (2,2) remains 'X' as per game rules
+   * - All other cells are marked as influenced with 'I'
+   * - The grid maintains its 5x5 structure
+   * - The influence grid is correctly indented
+   */
+  @Test
+  public void testRenderPlayerHand_AllInfluencedCard() {
+    mockModel.setupInitialBoard();
+
+    boolean[][] influenceGrid = new boolean[5][5];
+    for (int row = 0; row < 5; row++) {
+      for (int col = 0; col < 5; col++) {
+        if (row != 2 || col != 2) {
+          influenceGrid[row][col] = true;
+        }
+      }
+    }
+
+    PawnsBoardBaseCard card = new PawnsBoardBaseCard("AllInfluenceCard", 1, 2, influenceGrid);
+
+    List<PawnsBoardBaseCard> redHand = new ArrayList<>();
+    redHand.add(card);
+
+    mockModel.setPlayerHand(PlayerColors.RED, redHand);
+
+    String output = view.renderPlayerHand(PlayerColors.RED);
+    String expected = "RED's hand:\n"
+            + "1: AllInfluenceCard (Cost: 1, Value: 2)\n"
+            + "   IIIII\n"
+            + "   IIIII\n"
+            + "   IICII\n"
+            + "   IIIII\n"
+            + "   IIIII\n\n";
+
+    assertEquals(expected, output);
+  }
+
+
+  /**
+   * Tests rendering a card with no influenced cells.
+   * Verifies that:
+   * - A card with no influence is correctly represented
+   * - All cells are marked with 'X'
+   * - The grid maintains its 5x5 structure
+   * - The influence grid is correctly indented
+   * - The basic card information is still displayed correctly
+   */
+  @Test
+  public void testRenderPlayerHand_NoInfluencedCard() {
+    mockModel.setupInitialBoard();
+
+    boolean[][] influenceGrid = new boolean[5][5];
+
+    PawnsBoardBaseCard card = new PawnsBoardBaseCard("NoInfluenceCard", 1, 2, influenceGrid);
+
+    List<PawnsBoardBaseCard> redHand = new ArrayList<>();
+    redHand.add(card);
+
+    mockModel.setPlayerHand(PlayerColors.RED, redHand);
+
+    String output = view.renderPlayerHand(PlayerColors.RED);
+    String expected = "RED's hand:\n"
+            + "1: NoInfluenceCard (Cost: 1, Value: 2)\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n"
+            + "   XXCXX\n"
+            + "   XXXXX\n"
+            + "   XXXXX\n\n";
+
+    assertEquals(expected, output);
+  }
+
 }
