@@ -83,9 +83,14 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
    * @throws IllegalStateException if trying to add a pawn to a cell with a card
    * @throws IllegalStateException if the cell already has the maximum number of pawns
    * @throws IllegalOwnerException if trying to add a pawn of a different owner
+   * @throws IllegalArgumentException if playerColors is null
    */
   @Override
   public void addPawn(PlayerColors playerColors) throws IllegalOwnerException {
+    if (playerColors == null) {
+      throw new IllegalArgumentException("Player colors cannot be null");
+    }
+
     if (content == CellContent.CARD) {
       throw new IllegalStateException("Cannot add pawn to a cell containing a card");
     }
@@ -130,9 +135,14 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
    *
    * @param card the card to place
    * @param playerColors the playerColors who owns the card
+   * @throws NullPointerException if card is null
    */
   @Override
   public void setCard(C card, PlayerColors playerColors) {
+    if (card == null) {
+      throw new NullPointerException("Card cannot be null");
+    }
+
     this.content = CellContent.CARD;
     this.owner = playerColors;
     this.card = card;

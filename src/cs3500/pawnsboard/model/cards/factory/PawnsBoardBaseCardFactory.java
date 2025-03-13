@@ -36,15 +36,25 @@ public class PawnsBoardBaseCardFactory implements CardFactory<PawnsBoardBaseCard
    * @return the boolean influence grid
    */
   private boolean[][] convertInfluenceGrid(char[][] charGrid) {
+    // First validate the grid
+    if (charGrid == null || charGrid.length != 5) {
+      throw new IllegalArgumentException("Influence grid must be a 5x5 grid");
+    }
+
+    for (int i = 0; i < charGrid.length; i++) {
+      if (charGrid[i] == null || charGrid[i].length != 5) {
+        throw new IllegalArgumentException("Influence grid must be a 5x5 grid");
+      }
+    }
+
+    // Then process it
     boolean[][] influence = new boolean[5][5];
-    
     for (int row = 0; row < 5; row++) {
       for (int col = 0; col < 5; col++) {
-        // Mark cells with influence (I)
         influence[row][col] = charGrid[row][col] == 'I';
       }
     }
-    
+
     return influence;
   }
   

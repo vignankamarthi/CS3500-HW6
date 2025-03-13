@@ -35,6 +35,7 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
   protected boolean gameOver;
   protected PlayerColors currentPlayerColors;
   protected boolean lastPlayerPassed;
+  protected int startingHandSize;
 
   // Board state - part of the grid representation invariant
   protected int rows;
@@ -73,8 +74,8 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
 
   /**
    * Helper method to draw a card for the current player.
-   * This happens automatically at the start of a turn.
-   * If there are no cards left in the deck, no card is drawn.
+   * Only draws a card if there are cards remaining in the deck
+   * and the starting hand size hasn't been exceeded.
    *
    * @throws IllegalStateException if the game hasn't been started or is already over
    */
@@ -84,10 +85,14 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
     List<C> currentDeck = getCurrentPlayerDeck();
     List<C> currentHand = getCurrentPlayerHand();
 
-    if (!currentDeck.isEmpty()) {
+    // Only draw if:
+    // 1. There are cards left in the deck
+    // 2. Hand size is not at full capacity (equal to startingHandSize)
+    if (!currentDeck.isEmpty() && currentHand.size() < startingHandSize) {
       currentHand.add(currentDeck.remove(0));
     }
   }
+
 
   /**
    * The current player passes their turn, giving control to the other player.

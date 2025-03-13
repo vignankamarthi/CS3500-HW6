@@ -97,6 +97,7 @@ public class PawnsBoardBase<C extends Card>
     // Validate dimensions
     validateBoardDimensions(rows, cols);
 
+    this.startingHandSize = startingHandSize;
     // Set up board
     // DOCUMENTED INVARIANT: Board dimensions (rows and columns) are set here and 
     // never modified elsewhere, maintaining the invariant that board dimensions 
@@ -145,9 +146,6 @@ public class PawnsBoardBase<C extends Card>
     gameStarted = true;
     gameOver = false;
     lastPlayerPassed = false;
-
-    // Draw a card for the first player at the start of the game
-    drawCard();
   }
 
   /**
