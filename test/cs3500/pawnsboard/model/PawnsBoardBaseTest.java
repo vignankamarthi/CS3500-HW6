@@ -32,7 +32,7 @@ public class PawnsBoardBaseTest {
   public void setUp() {
     model = new PawnsBoardBase<>();
     // Use the test deck configuration file
-    testDeckPath = "docs" + File.separator + "3x5PawnsBoardBaseCompleteDeck.config";
+    testDeckPath = "docs" + File.separator + "3x5TestingDeck.config";
   }
 
   /**

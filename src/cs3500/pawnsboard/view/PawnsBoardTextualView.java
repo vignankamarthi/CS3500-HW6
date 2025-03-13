@@ -5,6 +5,8 @@ import cs3500.pawnsboard.model.enumerations.CellContent;
 import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.cards.Card;
 
+import java.util.List;
+
 /**
  * Text-based view for the Pawns Board game.
  * Renders the game state as a string with the following format:
@@ -81,9 +83,54 @@ public class PawnsBoardTextualView<C extends Card> implements PawnsBoardView {
   }
   
   /**
+   * Renders the current player's hand as a string.
+   * Each card is displayed with its index, name, cost, and value.
+   *
+   * @return a string representation of the current player's hand
+   */
+  public String renderCurrentPlayerHand() {
+    if (!isGameStarted()) {
+      return "";
+    }
+    
+    PlayerColors currentPlayer = model.getCurrentPlayer();
+    return renderPlayerHand(currentPlayer);
+  }
+  
+  /**
+   * Renders a player's hand as a string.
+   * Each card is displayed with its index, name, cost, and value.
+   *
+   * @param player the player whose hand to render
+   * @return a string representation of the player's hand
+   */
+  public String renderPlayerHand(PlayerColors player) {
+    if (!isGameStarted()) {
+      return "";
+    }
+    
+    List<C> hand = model.getPlayerHand(player);
+    if (hand.isEmpty()) {
+      return player + "'s hand is empty";
+    }
+    
+    StringBuilder handStr = new StringBuilder();
+    handStr.append(player).append("'s hand:\n");
+    
+    for (int i = 0; i < hand.size(); i++) {
+      C card = hand.get(i);
+      handStr.append(String.format("%d: %s (Cost: %d, Value: %d)\n", 
+              i + 1, card.getName(), card.getCost(), card.getValue()));
+    }
+    
+    return handStr.toString();
+  }
+  
+  /**
    * Renders a comprehensive view of the game state including:
    * - Current game status (started, in progress, over)
    * - Current player
+   * - Current player's hand
    * - Board state
    * - Game results if the game is over
    *
@@ -98,7 +145,10 @@ public class PawnsBoardTextualView<C extends Card> implements PawnsBoardView {
     
     // Add current player information
     PlayerColors currentPlayer = model.getCurrentPlayer();
-    gameState.append("Current Player: ").append(currentPlayer).append("\n");
+    gameState.append("Current Player: ").append(currentPlayer).append("\n\n");
+    
+    // Add current player's hand
+    gameState.append(renderPlayerHand(currentPlayer)).append("\n");
     
     // Add the board representation
     gameState.append(this).append("\n");

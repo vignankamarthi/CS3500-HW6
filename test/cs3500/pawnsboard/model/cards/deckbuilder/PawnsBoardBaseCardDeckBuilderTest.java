@@ -37,7 +37,7 @@ public class PawnsBoardBaseCardDeckBuilderTest {
     cardFactory = new PawnsBoardBaseCardFactory();
 
     // Set up paths to test files
-    validDeckPath = "docs" + File.separator + "3x5PawnsBoardBaseCompleteDeck.config";
+    validDeckPath = "docs" + File.separator + "3x5TestingDeck.config";
     smallDeckPath = "docs" + File.separator + "1x3SmallPawnsBoardBaseCompleteDeck.config";
   }
 

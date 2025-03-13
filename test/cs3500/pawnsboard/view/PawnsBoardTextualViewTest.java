@@ -177,7 +177,8 @@ public class PawnsBoardTextualViewTest {
              .setCurrentPlayer(PlayerColors.RED);
     
     String output = view.renderGameState();
-    String expected = "Current Player: RED\n"
+    String expected = "Current Player: RED\n\n"
+                    + "RED's hand is empty\n"
                     + "0 1r __ __ __ 1b 0\n"
                     + "0 1r __ __ __ 1b 0\n"
                     + "0 1r __ __ __ 1b 0\n";
@@ -195,7 +196,8 @@ public class PawnsBoardTextualViewTest {
     
     String output = view.renderGameState("Game Start");
     String expected = "--- Game Start ---\n"
-                    + "Current Player: RED\n"
+                    + "Current Player: RED\n\n"
+                    + "RED's hand is empty\n"
                     + "0 1r __ __ __ 1b 0\n"
                     + "0 1r __ __ __ 1b 0\n"
                     + "0 1r __ __ __ 1b 0\n";
@@ -215,7 +217,8 @@ public class PawnsBoardTextualViewTest {
     
     String output = view.renderGameState("Game Results");
     String expected = "--- Game Results ---\n"
-                    + "Current Player: RED\n"
+                    + "Current Player: RED\n\n"
+                    + "RED's hand is empty\n"
                     + "0 1r __ __ __ 1b 0\n"
                     + "0 1r __ __ __ 1b 0\n"
                     + "0 1r __ __ __ 1b 0\n"
@@ -239,7 +242,8 @@ public class PawnsBoardTextualViewTest {
     
     String output = view.renderGameState("Game Results");
     String expected = "--- Game Results ---\n"
-                    + "Current Player: RED\n"
+                    + "Current Player: RED\n\n"
+                    + "RED's hand is empty\n"
                     + "0 1r __ __ __ 1b 0\n"
                     + "0 1r __ __ __ 1b 0\n"
                     + "0 1r __ __ __ 1b 0\n"
@@ -247,6 +251,73 @@ public class PawnsBoardTextualViewTest {
                     + "RED score: 5\n"
                     + "BLUE score: 3\n"
                     + "Winner: RED";
+    
+    assertEquals(expected, output);
+  }
+  
+  /**
+   * Tests the renderPlayerHand method for a player with cards.
+   */
+  @Test
+  public void testRenderPlayerHand_WithCards() {
+    mockModel.setupInitialBoard();
+    
+    // Create test cards
+    PawnsBoardBaseCard card1 = new PawnsBoardBaseCard("Card1", 1, 2, emptyInfluence);
+    PawnsBoardBaseCard card2 = new PawnsBoardBaseCard("Card2", 2, 3, emptyInfluence);
+    
+    // Create hand
+    List<PawnsBoardBaseCard> redHand = new ArrayList<>();
+    redHand.add(card1);
+    redHand.add(card2);
+    
+    mockModel.setPlayerHand(PlayerColors.RED, redHand);
+    
+    String output = view.renderPlayerHand(PlayerColors.RED);
+    String expected = "RED's hand:\n"
+                    + "1: Card1 (Cost: 1, Value: 2)\n"
+                    + "2: Card2 (Cost: 2, Value: 3)\n";
+    
+    assertEquals(expected, output);
+  }
+  
+  /**
+   * Tests the renderPlayerHand method for a player with an empty hand.
+   */
+  @Test
+  public void testRenderPlayerHand_EmptyHand() {
+    mockModel.setupInitialBoard();
+    mockModel.setPlayerHand(PlayerColors.RED, new ArrayList<>());
+    
+    String output = view.renderPlayerHand(PlayerColors.RED);
+    String expected = "RED's hand is empty";
+    
+    assertEquals(expected, output);
+  }
+  
+  /**
+   * Tests the renderCurrentPlayerHand method.
+   */
+  @Test
+  public void testRenderCurrentPlayerHand() {
+    mockModel.setupInitialBoard();
+    mockModel.setCurrentPlayer(PlayerColors.BLUE);
+    
+    // Create test cards
+    PawnsBoardBaseCard card1 = new PawnsBoardBaseCard("Card1", 1, 2, emptyInfluence);
+    PawnsBoardBaseCard card2 = new PawnsBoardBaseCard("Card2", 2, 3, emptyInfluence);
+    
+    // Create hand
+    List<PawnsBoardBaseCard> blueHand = new ArrayList<>();
+    blueHand.add(card1);
+    blueHand.add(card2);
+    
+    mockModel.setPlayerHand(PlayerColors.BLUE, blueHand);
+    
+    String output = view.renderCurrentPlayerHand();
+    String expected = "BLUE's hand:\n"
+                    + "1: Card1 (Cost: 1, Value: 2)\n"
+                    + "2: Card2 (Cost: 2, Value: 3)\n";
     
     assertEquals(expected, output);
   }

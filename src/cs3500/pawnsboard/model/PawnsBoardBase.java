@@ -70,7 +70,6 @@ public class PawnsBoardBase<C extends Card>
    * Constructs a PawnsBoardBase with a default deck builder.
    * Uses the PawnsBoardBaseCardDeckBuilder as the default implementation.
    */
-  @SuppressWarnings("unchecked")
   public PawnsBoardBase() {
     this.deckBuilder = (DeckBuilder<C>) new PawnsBoardBaseCardDeckBuilder();
   }
@@ -98,7 +97,6 @@ public class PawnsBoardBase<C extends Card>
     validateBoardDimensions(rows, cols);
 
     this.startingHandSize = startingHandSize;
-    // Set up board
     // DOCUMENTED INVARIANT: Board dimensions (rows and columns) are set here and 
     // never modified elsewhere, maintaining the invariant that board dimensions 
     // remain fixed after initialization
@@ -106,7 +104,6 @@ public class PawnsBoardBase<C extends Card>
     this.columns = cols;
     board = createEmptyBoard(rows, cols);
 
-    // Set up decks and hands
     List<List<C>> decks = deckBuilder.createDecks(deckConfigPath, false);
     if (decks.size() != 2) {
       throw new InvalidDeckConfigurationException("Expected 2 decks, got " + decks.size());
@@ -115,33 +112,27 @@ public class PawnsBoardBase<C extends Card>
     redDeck = decks.get(0);
     blueDeck = decks.get(1);
 
-    // Validate deck size
     int minDeckSize = rows * cols;
     if (redDeck.size() < minDeckSize || blueDeck.size() < minDeckSize) {
       throw new InvalidDeckConfigurationException(
               "Deck size must be at least " + minDeckSize + " cards");
     }
 
-    // Validate starting hand size
     if (startingHandSize > redDeck.size() / 3) {
       throw new IllegalArgumentException(
               "Starting hand size cannot exceed one third of the deck size");
     }
 
-    // Set up hands
     redHand = new ArrayList<>();
     blueHand = new ArrayList<>();
 
-    // Deal cards
     for (int i = 0; i < startingHandSize; i++) {
       redHand.add(redDeck.remove(0));
       blueHand.add(blueDeck.remove(0));
     }
 
-    // Initialize board with starting pawns
     initializeStartingBoard();
 
-    // Set game state
     currentPlayerColors = PlayerColors.RED;
     gameStarted = true;
     gameOver = false;
