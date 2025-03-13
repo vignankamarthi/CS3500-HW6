@@ -1,6 +1,5 @@
 package cs3500.pawnsboard.model;
 
-import cs3500.pawnsboard.model.cards.Card;
 import cs3500.pawnsboard.model.cards.PawnsBoardBaseCard;
 import cs3500.pawnsboard.model.enumerations.CellContent;
 import cs3500.pawnsboard.model.enumerations.PlayerColors;
@@ -495,5 +494,74 @@ public class PawnsBoardBaseTest {
 
     // Verify turn
     assertEquals(PlayerColors.RED, model.getCurrentPlayer());
+  }
+  
+  // -----------------------------------------------------------------------
+  // Tests for getCardAtCell method
+  // -----------------------------------------------------------------------
+  
+  /**
+   * Tests that accessing a card before the game is started throws an exception.
+   */
+  @Test(expected = IllegalStateException.class)
+  public void testGetCardAtCell_GameNotStarted() {
+    model.getCardAtCell(0, 0);
+  }
+
+  /**
+   * Tests that accessing a card with invalid coordinates throws an exception.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testGetCardAtCell_InvalidCoordinates() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, testDeckPath, 5);
+    model.getCardAtCell(10, 10);
+  }
+
+  /**
+   * Tests that retrieving a card from an empty cell returns null.
+   */
+  @Test
+  public void testGetCardAtCell_EmptyCell() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, testDeckPath, 5);
+    assertNull("Empty cell should not have a card", model.getCardAtCell(1, 1));
+  }
+
+  /**
+   * Tests that retrieving a card from a cell with pawns returns null.
+   */
+  @Test
+  public void testGetCardAtCell_CellWithPawns() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, testDeckPath, 5);
+    // The cell at (0,0) should have a RED pawn initially
+    assertEquals(CellContent.PAWNS, model.getCellContent(0, 0));
+    assertNull("Cell with pawns should not have a card", model.getCardAtCell(0, 0));
+  }
+
+  /**
+   * Tests retrieving a card from a cell where a card was placed.
+   */
+  @Test
+  public void testGetCardAtCell_CellWithCard() throws InvalidDeckConfigurationException,
+          IllegalAccessException, IllegalOwnerException, IllegalCardException {
+    model.startGame(3, 5, testDeckPath, 5);
+    
+    // Get the card that will be placed
+    List<PawnsBoardBaseCard> redHand = model.getPlayerHand(model.getCurrentPlayer());
+    PawnsBoardBaseCard cardToPlace = redHand.get(0);
+    
+    // Place the card
+    model.placeCard(0, 0, 0);
+    
+    // Retrieve the card
+    PawnsBoardBaseCard retrievedCard = model.getCardAtCell(0, 0);
+    
+    // Verify it's the same card
+    assertNotNull("Card should be retrieved", retrievedCard);
+    assertEquals("Retrieved card should match placed card", 
+            cardToPlace.getName(), retrievedCard.getName());
+    assertEquals("Retrieved card should match placed card", 
+            cardToPlace.getCost(), retrievedCard.getCost());
+    assertEquals("Retrieved card should match placed card", 
+            cardToPlace.getValue(), retrievedCard.getValue());
   }
 }

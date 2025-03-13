@@ -497,4 +497,28 @@ public class PawnsBoardBase<C extends Card>
       throw new IllegalStateException("Error applying influence: " + e.getMessage());
     }
   }
+  
+  /**
+   * Gets the card at the specified cell position.
+   *
+   * @param row the row index of the cell
+   * @param col the column index of the cell
+   * @return the card at the specified position, or null if the cell doesn't contain a card
+   * @throws IllegalArgumentException if the coordinates are invalid
+   * @throws IllegalStateException if the game hasn't been started
+   */
+  @Override
+  public C getCardAtCell(int row, int col) 
+          throws IllegalArgumentException, IllegalStateException {
+    validateGameStarted();
+    validateCoordinates(row, col);
+    
+    PawnsBoardCell<C> cell = board.get(row).get(col);
+    
+    if (cell.getContent() != CellContent.CARD) {
+      return null;
+    }
+    
+    return cell.getCard();
+  }
 }

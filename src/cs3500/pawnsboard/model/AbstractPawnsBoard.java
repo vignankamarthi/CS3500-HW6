@@ -2,6 +2,7 @@ package cs3500.pawnsboard.model;
 
 import cs3500.pawnsboard.model.cards.Card;
 import cs3500.pawnsboard.model.cell.PawnsBoardCell;
+import cs3500.pawnsboard.model.enumerations.CellContent;
 import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 
@@ -284,5 +285,31 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
    */
   protected boolean isPlayerRed(PlayerColors playerColors) {
     return playerColors == PlayerColors.RED;
+  }
+
+  /**
+   * Gets the card at the specified cell position.
+   * This is a default implementation that throws UnsupportedOperationException.
+   * Concrete subclasses must override this method to provide appropriate implementations.
+   *
+   * @param row the row index of the cell
+   * @param col the column index of the cell
+   * @return the card at the specified position, or null if the cell doesn't contain a card
+   * @throws IllegalArgumentException if the coordinates are invalid
+   * @throws IllegalStateException if the game hasn't been started
+   * @throws UnsupportedOperationException if not implemented by a subclass
+   */
+  @Override
+  public C getCardAtCell(int row, int col) 
+          throws IllegalArgumentException, IllegalStateException {
+    validateGameStarted();
+    validateCoordinates(row, col);
+    
+    if (getCellContent(row, col) != CellContent.CARD) {
+      return null;
+    }
+    
+    // This method needs implementation in subclasses that know about the board structure
+    throw new UnsupportedOperationException("Method must be implemented by subclasses");
   }
 }

@@ -236,4 +236,15 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
    * @throws IllegalStateException if the game hasn't been started or is not over
    */
   PlayerColors getWinner() throws IllegalStateException;
+
+  /**
+   * Gets the card at the specified cell position.
+   *
+   * @param row the row index of the cell
+   * @param col the column index of the cell
+   * @return the card at the specified position, or null if the cell doesn't contain a card
+   * @throws IllegalArgumentException if the coordinates are invalid
+   * @throws IllegalStateException if the game hasn't been started
+   */
+  C getCardAtCell(int row, int col) throws IllegalArgumentException, IllegalStateException;
 }
