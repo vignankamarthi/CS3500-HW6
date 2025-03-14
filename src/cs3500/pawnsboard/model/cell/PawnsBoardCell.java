@@ -4,7 +4,6 @@ import cs3500.pawnsboard.model.enumerations.CellContent;
 import cs3500.pawnsboard.model.PawnsBoard;
 import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.cards.Card;
-import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 
 /**
  * Represents a single cell on the {@link PawnsBoard}.
@@ -52,7 +51,7 @@ public interface PawnsBoardCell<C extends Card> {
    *                   different owner
    * @throws IllegalArgumentException if playerColors is null
    */
-  void addPawn(PlayerColors playerColors) throws IllegalOwnerException;
+  void addPawn(PlayerColors playerColors) throws Exception;
 
   /**
    * Changes the ownership of pawns in this cell.
