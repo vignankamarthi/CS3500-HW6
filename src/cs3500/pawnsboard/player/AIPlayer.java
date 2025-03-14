@@ -79,7 +79,7 @@ public class AIPlayer<C extends Card> implements Player<C> {
         throw new IllegalOwnerException("Not " + playerColor + "'s turn");
       }
       
-      // Stub implementation: just delegate to the model
+      // delegate to the model
       model.placeCard(cardIndex, row, col);
     } catch (IllegalStateException | IllegalAccessException | 
              IllegalOwnerException | IllegalCardException e) {
@@ -106,7 +106,7 @@ public class AIPlayer<C extends Card> implements Player<C> {
         throw new IllegalOwnerException("Not " + playerColor + "'s turn");
       }
       
-      // Stub implementation: just delegate to the model
+      // delegate to the model
       model.passTurn();
     } catch (IllegalStateException | IllegalOwnerException e) {
       // Automatically capture the error

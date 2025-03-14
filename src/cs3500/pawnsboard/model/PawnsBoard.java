@@ -11,8 +11,6 @@ import cs3500.pawnsboard.model.exceptions.IllegalCardException;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 import cs3500.pawnsboard.model.exceptions.InvalidDeckConfigurationException;
 
-//TODO: Create a user-player interface that, in the future, allows for user OR AI player implementations
-//TODO: Create document for how I envision instantiating user-player for AI and human player differentiation
 //TODO: Create a README File for the ENTIRE PROJECT
 /**
  * This interface represents the behaviors for the Pawns Board game.
