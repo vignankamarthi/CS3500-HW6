@@ -86,7 +86,7 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
    * @throws IllegalArgumentException if playerColors is null
    */
   @Override
-  public void addPawn(PlayerColors playerColors) throws IllegalOwnerException {
+  public void addPawn(PlayerColors playerColors) {
     if (playerColors == null) {
       throw new IllegalArgumentException("Player colors cannot be null");
     }

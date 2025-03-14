@@ -50,7 +50,7 @@ public interface PawnsBoardCell<C extends Card> {
    * @throws IllegalStateException if the cell already has the maximum number of pawns
    * @throws IllegalOwnerException if trying to add a pawn of a different owner
    */
-  void addPawn(PlayerColors playerColors) throws IllegalOwnerException;
+  void addPawn(PlayerColors playerColors);
 
   /**
    * Changes the ownership of pawns in this cell.
