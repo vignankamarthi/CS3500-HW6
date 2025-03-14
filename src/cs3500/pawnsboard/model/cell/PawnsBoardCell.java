@@ -4,6 +4,7 @@ import cs3500.pawnsboard.model.enumerations.CellContent;
 import cs3500.pawnsboard.model.PawnsBoard;
 import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.cards.Card;
+import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 
 /**
  * Represents a single cell on the {@link PawnsBoard}.
@@ -47,8 +48,8 @@ public interface PawnsBoardCell<C extends Card> {
    * @param playerColors the playerColors who owns the pawn
    * @throws IllegalStateException if trying to add a pawn to a cell with a card
    * @throws IllegalStateException if the cell already has the maximum number of pawns
-   * @throws Exception actually throws an IllegalOwnerException when trying to add a pawn of a
-   *                   different owner
+   * @throws Exception actually throws an {@link IllegalOwnerException} when trying to add a pawn of
+   *                   a different owner
    * @throws IllegalArgumentException if playerColors is null
    */
   void addPawn(PlayerColors playerColors) throws Exception;
