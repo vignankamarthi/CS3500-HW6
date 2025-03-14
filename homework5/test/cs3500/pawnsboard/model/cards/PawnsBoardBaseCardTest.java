@@ -250,7 +250,7 @@ public class PawnsBoardBaseCardTest {
    */
   @Test
   public void testEqualsWithNull() {
-    assertFalse("A card should not equal null", card == null);
+    assertFalse("A card should not equal null", card.equals(null));
   }
 
   /**

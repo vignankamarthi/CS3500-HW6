@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class PawnsBoardBaseCardReaderTest {
 
+  private CardFactory<PawnsBoardBaseCard> cardFactory;
   private PawnsBoardBaseCardReader cardReader;
   private String validCardConfig;
   private String invalidCostCardConfig;
@@ -40,7 +41,7 @@ public class PawnsBoardBaseCardReaderTest {
 
   @Before
   public void setUp() {
-    CardFactory<PawnsBoardBaseCard> cardFactory = new PawnsBoardBaseCardFactory();
+    cardFactory = new PawnsBoardBaseCardFactory();
     cardReader = new PawnsBoardBaseCardReader(cardFactory);
 
     // Valid card configuration
@@ -95,10 +96,8 @@ public class PawnsBoardBaseCardReaderTest {
       new PawnsBoardBaseCardReader(null);
     } catch (NullPointerException e) {
       assertEquals("Expected appropriate exception message",
-              "Cannot invoke " +
-                      "\"cs3500.pawnsboard.model.cards.factory.CardFactory.createPawnsBoardBaseCard"
-                      + "(String, int, int, char[][])\" because \"this.cardFactory\" is null",
-              e.getMessage());
+              "Cannot invoke \"cs3500.pawnsboard.model.cards.factory.CardFactory.createPawnsBoardBaseCard"
+                      + "(String, int, int, char[][])\" because \"this.cardFactory\" is null", e.getMessage());
     }
   }
 
@@ -169,8 +168,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: Card cost must be between 1 and 3, got: 4",
-              e.getMessage());
+              "Error reading card file: Card cost must be between 1 and 3, got: 4", e.getMessage());
     }
   }
 
@@ -185,8 +183,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: Card value must be positive, got: 0",
-              e.getMessage());
+              "Error reading card file: Card value must be positive, got: 0", e.getMessage());
     }
   }
 
@@ -201,8 +198,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: " +
-                      "Unexpected end of file while reading influence grid", e.getMessage());
+              "Error reading card file: Unexpected end of file while reading influence grid", e.getMessage());
     }
   }
 
@@ -217,8 +213,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: Invalid character in influence grid: A, " +
-                      "expected X, I, or C",
+              "Error reading card file: Invalid character in influence grid: A, expected X, I, or C",
               e.getMessage());
     }
   }
@@ -234,8 +229,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: Multiple card positions (C) found in " +
-                      "influence grid",
+              "Error reading card file: Multiple card positions (C) found in influence grid",
               e.getMessage());
     }
   }
@@ -267,8 +261,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: Card position (C) must be in the center at " +
-                      "(2,2), found at (1,3)",
+              "Error reading card file: Card position (C) must be in the center at (2,2), found at (1,3)",
               e.getMessage());
     }
   }
@@ -302,8 +295,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: Unexpected end of file while reading " +
-                      "influence grid",
+              "Error reading card file: Unexpected end of file while reading influence grid",
               e.getMessage());
     }
   }
@@ -320,8 +312,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: Invalid cost object type in card header: " +
-                      "TestCard ABC 3",
+              "Error reading card file: Invalid cost object type in card header: TestCard ABC 3",
               e.getMessage());
     }
   }
@@ -338,8 +329,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: Invalid value object type in card header: " +
-                      "TestCard 2 ABC",
+              "Error reading card file: Invalid value object type in card header: TestCard 2 ABC",
               e.getMessage());
     }
   }
@@ -356,8 +346,7 @@ public class PawnsBoardBaseCardReaderTest {
       cardReader.readCards(cardFile.getAbsolutePath());
     } catch (IllegalArgumentException e) {
       assertEquals("Expected appropriate exception message",
-              "Error reading card file: Influence grid line must have exactly 5 " +
-                      "characters, got: XXIXXX",
+              "Error reading card file: Influence grid line must have exactly 5 characters, got: XXIXXX",
               e.getMessage());
     }
   }

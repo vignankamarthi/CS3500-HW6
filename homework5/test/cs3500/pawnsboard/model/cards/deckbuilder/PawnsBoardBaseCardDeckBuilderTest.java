@@ -293,15 +293,14 @@ public class PawnsBoardBaseCardDeckBuilderTest {
     // size
     boolean atLeastOneDifferent = false;
     for (int i = 0; i < decksNoShuffle.get(0).size(); i++) {
-      if (!decksNoShuffle.get(0).get(i).getName().equals(decksWithShuffle.get(0).get(i).getName()))
-      {
+      if
+      (!decksNoShuffle.get(0).get(i).getName().equals(decksWithShuffle.get(0).get(i).getName())) {
         atLeastOneDifferent = true;
         break;
       }
     }
 
     // Assert that at least one card is in a different position
-    assertTrue("Shuffled deck should have at least one card in a different position",
-            atLeastOneDifferent);
+    assertTrue("Shuffled deck should have at least one card in a different position", atLeastOneDifferent);
   }
 }

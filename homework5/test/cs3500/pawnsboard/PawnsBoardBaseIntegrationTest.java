@@ -90,8 +90,7 @@ public class PawnsBoardBaseIntegrationTest {
   }
 
   /**
-   * Tests that the view's renderGameState correctly displays the current player, score, and board
-   * state.
+   * Tests that the view's renderGameState correctly displays the current player, score, and board state.
    */
   @Test
   public void testRenderGameState() throws InvalidDeckConfigurationException {
@@ -113,10 +112,10 @@ public class PawnsBoardBaseIntegrationTest {
     // Find the line with the first row representation
     boolean foundBoardState = false;
     for (String line : lines) {
-      if (line.matches("0 1r __ __ __ 1b 0")) {
-        foundBoardState = true;
-        break;
-      }
+        if (line.matches("0 1r __ __ __ 1b 0")) {
+            foundBoardState = true;
+            break;
+        }
     }
     assertEquals("Board state should be rendered correctly", true,
             foundBoardState);
@@ -173,12 +172,12 @@ public class PawnsBoardBaseIntegrationTest {
     boolean hasTieGame = false;
     
     for (String line : lines) {
-      if (line.equals("Game is over")) {
-        hasGameOver = true;
-      }
-      if (line.equals("Game ended in a tie!")) {
-        hasTieGame = true;
-      }
+        if (line.equals("Game is over")) {
+            hasGameOver = true;
+        }
+        if (line.equals("Game ended in a tie!")) {
+            hasTieGame = true;
+        }
     }
     
     assertEquals("Should indicate game is over", true, hasGameOver);
@@ -208,12 +207,12 @@ public class PawnsBoardBaseIntegrationTest {
     boolean hasRedWinner = false;
     
     for (String line : lines) {
-      if (line.equals("Game is over")) {
-        hasGameOver = true;
-      }
-      if (line.equals("Winner: RED")) {
-        hasRedWinner = true;
-      }
+        if (line.equals("Game is over")) {
+            hasGameOver = true;
+        }
+        if (line.equals("Winner: RED")) {
+            hasRedWinner = true;
+        }
     }
     
     assertEquals("Should indicate game is over", true, hasGameOver);
@@ -252,12 +251,12 @@ public class PawnsBoardBaseIntegrationTest {
     boolean hasInfluenceGrid = false;
     
     for (String line : lines) {
-      if (line.contains("Cost:")) {
-        hasCostInfo = true;
-      }
-      if (line.contains("X") && line.contains("X")) {
-        hasInfluenceGrid = true;
-      }
+        if (line.contains("Cost:")) {
+            hasCostInfo = true;
+        }
+        if (line.contains("X") && line.contains("X")) {
+            hasInfluenceGrid = true;
+        }
     }
     
     assertEquals("Should display card costs", true, hasCostInfo);
@@ -534,12 +533,12 @@ public class PawnsBoardBaseIntegrationTest {
     boolean hasTieGame = false;
     
     for (String line : lines) {
-      if (line.equals("Game is over")) {
-        hasGameOver = true;
-      }
-      if (line.equals("Game ended in a tie!")) {
-        hasTieGame = true;
-      }
+        if (line.equals("Game is over")) {
+            hasGameOver = true;
+        }
+        if (line.equals("Game ended in a tie!")) {
+            hasTieGame = true;
+        }
     }
     
     assertEquals("Should indicate game is over", true, hasGameOver);

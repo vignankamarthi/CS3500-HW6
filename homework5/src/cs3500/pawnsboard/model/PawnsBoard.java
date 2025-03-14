@@ -60,8 +60,7 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
    * @param startingHandSize the number of cards each player starts with
    * @throws IllegalArgumentException if any of the dimensional parameters are invalid
    * @throws IllegalArgumentException if the starting hand size is too large
-   * @throws InvalidDeckConfigurationException if deck configuration is invalid or cannot be
-   *                                           read
+   * @throws {@link InvalidDeckConfigurationException} if deck configuration is invalid or cannot be read
    */
   void startGame(int rows, int cols, String deckConfigPath, int startingHandSize)
           throws IllegalArgumentException, InvalidDeckConfigurationException;
@@ -103,9 +102,9 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
    * @param col the column index where the card will be placed
    * @throws IllegalArgumentException if the coordinates are invalid
    * @throws IllegalStateException if the game hasn't been started or is already over
-   * @throws IllegalAccessException if the cell doesn't contain enough pawns for the card's cost
-   * @throws IllegalOwnerException if the pawns in the cell aren't owned by the current player
-   * @throws IllegalCardException if the card is not in the current player's hand
+   * @throws {@link IllegalAccessException} if the cell doesn't contain enough pawns for the card's cost
+   * @throws {@link IllegalOwnerException} if the pawns in the cell aren't owned by the current player
+   * @throws {@link IllegalCardException} if the card is not in the current player's hand
    */
   void placeCard(int cardIndex, int row, int col)
           throws IllegalArgumentException, IllegalStateException, IllegalAccessException,
@@ -135,7 +134,7 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
    * board.</p>
    *
    * @return an array where the elements represent some type of dimension depending on the shape of
-   *         the board.
+   * the board.
    * @throws IllegalStateException if the game hasn't been started
    */
   int[] getBoardDimensions() throws IllegalStateException;
@@ -145,8 +144,7 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
    *
    * @param row the row index of the cell
    * @param col the column index of the cell
-   * @return a {@link CellContent} enum indicating whether the cell is empty, contains pawns, or a
-   *         card
+   * @return a {@link CellContent} enum indicating whether the cell is empty, contains pawns, or a card
    * @throws IllegalArgumentException if the coordinates are invalid
    * @throws IllegalStateException if the game hasn't been started
    */

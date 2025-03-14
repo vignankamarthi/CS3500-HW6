@@ -6,6 +6,7 @@ import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.exceptions.IllegalAccessException;
 import cs3500.pawnsboard.model.exceptions.IllegalCardException;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
+import cs3500.pawnsboard.view.PawnsBoardTextualView;
 
 /**
  * Implementation of Player interface for human players in the PawnsBoard game.
@@ -40,9 +41,9 @@ public class HumanPlayer<C extends Card> implements Player<C> {
    * This method doesn't directly take input but is called by the controller
    * after gathering the player's decision.
    * 
-   * <p>Note: For human players, the actual move decisions are managed by a controller,
+   * Note: For human players, the actual move decisions are managed by a controller,
    * which will call either placeCard() or passTurn() based on user input.
-   * This method is primarily for synchronization with the AI implementation.</p>
+   * This method is primarily for synchronization with the AI implementation.
    *
    * @param model the current state of the game
    * @throws IllegalStateException if the game hasn't been started or is already over
@@ -95,8 +96,8 @@ public class HumanPlayer<C extends Card> implements Player<C> {
       
       // Reset invalid move flag after successful move
       receivedInvalidMove = false;
-    } catch (IllegalStateException | IllegalAccessException
-             | IllegalOwnerException | IllegalCardException e) {
+    } catch (IllegalStateException | IllegalAccessException | 
+             IllegalOwnerException | IllegalCardException e) {
       // Automatically capture the error
       receiveInvalidMoveMessage(e.getMessage());
       // Re-throw to allow the controller to handle it if needed

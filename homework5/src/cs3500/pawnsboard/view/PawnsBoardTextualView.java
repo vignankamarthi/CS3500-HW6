@@ -15,7 +15,7 @@ import java.util.List;
  * - Cells with pawns: The number of pawns followed by lowercase owner letter (e.g., "1r", "3b")
  * - Cells with cards: The owner uppercase letter followed by the card's value (e.g., "R2", "B1")
  * 
- * <p>Each row also shows the row scores for RED and BLUE players.p>
+ * Each row also shows the row scores for RED and BLUE players.
  *
  * @param <C> the type of Card used in the game
  */
@@ -134,7 +134,7 @@ public class PawnsBoardTextualView<C extends Card> implements PawnsBoardView {
   }
   
   /**
-   * Renders a comprehensive view of the game state including the following.
+   * Renders a comprehensive view of the game state including:
    * - Current game status (started, in progress, over)
    * - Current player
    * - Current player's hand

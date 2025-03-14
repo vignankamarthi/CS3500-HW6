@@ -36,7 +36,7 @@ public class PawnsBoardBaseCardDeckBuilder implements DeckBuilder<PawnsBoardBase
    *
    * @param filePath path to the {@link Card} configuration file
    * @return a list containing two decks (lists of {@link PawnsBoardBaseCard}s): one for each player
-   * @throws InvalidDeckConfigurationException if the deck configuration is invalid
+   * @throws {@link InvalidDeckConfigurationException} if the deck configuration is invalid
    */
   @Override
   public List<List<PawnsBoardBaseCard>> createDecks(String filePath)
@@ -50,7 +50,7 @@ public class PawnsBoardBaseCardDeckBuilder implements DeckBuilder<PawnsBoardBase
    * @param filePath path to the card configuration file
    * @param shuffle whether to shuffle the decks
    * @return a list containing two decks (lists of {@link PawnsBoardBaseCard}s): one for each player
-   * @throws InvalidDeckConfigurationException if the deck configuration is invalid
+   * @throws {@link InvalidDeckConfigurationException} if the deck configuration is invalid
    */
   @Override
   public List<List<PawnsBoardBaseCard>> createDecks(String filePath, boolean shuffle)
@@ -79,7 +79,7 @@ public class PawnsBoardBaseCardDeckBuilder implements DeckBuilder<PawnsBoardBase
    * Validates that a deck follows the {@link cs3500.pawnsboard.model.PawnsBoard} rules.
    *
    * @param deck the deck to validate
-   * @throws InvalidDeckConfigurationException if the deck doesn't follow game rules
+   * @throws {@link InvalidDeckConfigurationException} if the deck doesn't follow game rules
    */
   @Override
   public void validateDeck(List<PawnsBoardBaseCard> deck)

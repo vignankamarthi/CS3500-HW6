@@ -42,8 +42,7 @@ public class PawnsBoardBaseCardFactoryTest {
     influenceGrid[1][2] = 'I';
 
     // Create a card with the influence grid
-    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("TestCard", 2,
-            3, influenceGrid);
+    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("TestCard", 2, 3, influenceGrid);
 
     // Verify card properties
     assertEquals("TestCard", card.getName());
@@ -78,8 +77,7 @@ public class PawnsBoardBaseCardFactoryTest {
     influenceGrid[2][2] = 'C';
 
     // Create a card with minimum valid values
-    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("MinCard", 1, 1,
-            influenceGrid);
+    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("MinCard", 1, 1, influenceGrid);
 
     // Verify card properties
     assertEquals("MinCard", card.getName());
@@ -359,8 +357,8 @@ public class PawnsBoardBaseCardFactoryTest {
       char[][] unevenGrid = new char[5][];
       for (int i = 0; i < 5; i++) {
         // Make row i have length i+1
-        unevenGrid[i] = new char[i + 1];
-        for (int j = 0; j < i + 1; j++) {
+        unevenGrid[i] = new char[i+1];
+        for (int j = 0; j < i+1; j++) {
           unevenGrid[i][j] = 'X';
         }
       }

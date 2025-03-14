@@ -1,5 +1,6 @@
 package cs3500.pawnsboard.model.cards.factory;
 
+import cs3500.pawnsboard.model.cards.Card;
 import cs3500.pawnsboard.model.cards.PawnsBoardBaseCard;
 
 /**

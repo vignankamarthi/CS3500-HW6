@@ -135,12 +135,12 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
    *
    * @param card the card to place
    * @param playerColors the playerColors who owns the card
-   * @throws IllegalArgumentException if card is null
+   * @throws NullPointerException if card is null
    */
   @Override
   public void setCard(C card, PlayerColors playerColors) {
     if (card == null) {
-      throw new IllegalArgumentException("Card cannot be null");
+      throw new NullPointerException("Card cannot be null");
     }
 
     this.content = CellContent.CARD;

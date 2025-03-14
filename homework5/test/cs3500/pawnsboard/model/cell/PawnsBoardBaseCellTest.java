@@ -8,9 +8,7 @@ import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
+import static org.junit.Assert.*;
 
 /**
  * Test suite for the PawnsBoardBaseCell class.
