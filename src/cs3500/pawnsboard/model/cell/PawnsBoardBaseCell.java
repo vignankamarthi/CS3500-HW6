@@ -82,11 +82,13 @@ public class PawnsBoardBaseCell<C extends Card> implements PawnsBoardCell<C> {
    * @param playerColors the playerColors who owns the pawn
    * @throws IllegalStateException if trying to add a pawn to a cell with a card
    * @throws IllegalStateException if the cell already has the maximum number of pawns
-   * @throws IllegalOwnerException if trying to add a pawn of a different owner
+   * @throws Exception actually throws an IllegalOwnerException when trying to add a pawn of a
+   *                   different owner
    * @throws IllegalArgumentException if playerColors is null
    */
   @Override
   public void addPawn(PlayerColors playerColors) throws IllegalOwnerException {
+    // This is a custom exception type called IllegalOwnerException
     if (playerColors == null) {
       throw new IllegalArgumentException("Player colors cannot be null");
     }
