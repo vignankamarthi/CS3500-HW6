@@ -102,7 +102,8 @@ public class PawnsBoardBaseCardFactoryTest {
     influenceGrid[2][2] = 'C';
 
     // Create a card with maximum valid cost
-    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("MaxCostCard", 3, 5, influenceGrid);
+    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("MaxCostCard", 3,
+            5, influenceGrid);
 
     // Verify card properties
     assertEquals("MaxCostCard", card.getName());
@@ -129,7 +130,8 @@ public class PawnsBoardBaseCardFactoryTest {
     influenceGrid[3][3] = 'I'; // Bottom-right diagonal
 
     // Create a card with the complex influence grid
-    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("ComplexCard", 2, 4, influenceGrid);
+    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("ComplexCard", 2,
+            4, influenceGrid);
 
     // Verify influence grid was properly converted
     boolean[][] expected = new boolean[5][5];
@@ -162,13 +164,15 @@ public class PawnsBoardBaseCardFactoryTest {
     influenceGrid[2][2] = 'C'; // Only the center marker
 
     // Create a card with no influence cells
-    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("NoInfluenceCard", 1, 2, influenceGrid);
+    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("NoInfluenceCard", 1,
+            2, influenceGrid);
 
     // Verify all influence grid cells are false
     boolean[][] actual = card.getInfluenceGrid();
     for (int i = 0; i < 5; i++) {
       for (int j = 0; j < 5; j++) {
-        assertFalse("Expected no influence at position [" + i + "][" + j + "]", actual[i][j]);
+        assertFalse("Expected no influence at position [" + i + "][" + j + "]",
+                actual[i][j]);
       }
     }
   }
@@ -188,7 +192,8 @@ public class PawnsBoardBaseCardFactoryTest {
     influenceGrid[2][2] = 'C'; // Center marker
 
     // Create a card with maximum influence
-    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("MaxInfluenceCard", 3, 5, influenceGrid);
+    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("MaxInfluenceCard", 3,
+            5, influenceGrid);
 
     // Verify all cells except center have influence
     boolean[][] actual = card.getInfluenceGrid();
@@ -199,7 +204,8 @@ public class PawnsBoardBaseCardFactoryTest {
           assertFalse("Center position [2][2] should not have influence", actual[i][j]);
         } else {
           // All other cells should have influence
-          assertTrue("Expected influence at position [" + i + "][" + j + "]", actual[i][j]);
+          assertTrue("Expected influence at position [" + i + "][" + j + "]",
+                  actual[i][j]);
         }
       }
     }
@@ -387,7 +393,8 @@ public class PawnsBoardBaseCardFactoryTest {
     influenceGrid[2][2] = 'C'; // Center marked with 'C'
 
     // Create a card
-    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("CenterCard", 2, 3, influenceGrid);
+    PawnsBoardBaseCard card = factory.createPawnsBoardBaseCard("CenterCard", 2,
+            3, influenceGrid);
 
     // Verify the center is marked as 'C' in the char representation
     char[][] charGrid = card.getInfluenceGridAsChars();

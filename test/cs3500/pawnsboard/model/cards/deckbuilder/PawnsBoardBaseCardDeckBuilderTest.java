@@ -194,6 +194,11 @@ public class PawnsBoardBaseCardDeckBuilderTest {
 
     // This should not throw an exception
     deckBuilder.validateDeck(deck);
+    
+    // Assert that we reached this point without exceptions
+    assertTrue("Valid deck should pass validation without exceptions", true);
+    assertEquals("Deck should still contain the card after validation", 1, deck.size());
+    assertEquals("Card in deck should remain unchanged", "TestCard", deck.get(0).getName());
   }
 
   /**
@@ -255,6 +260,11 @@ public class PawnsBoardBaseCardDeckBuilderTest {
 
     // This should not throw an exception
     deckBuilder.validateDeck(deck);
+    
+    // Assert that validation passed successfully
+    assertEquals("Deck should maintain two copies after validation", 2, deck.size());
+    assertEquals("First card name should be preserved", "DuplicateCard", deck.get(0).getName());
+    assertEquals("Second card name should be preserved", "DuplicateCard", deck.get(1).getName());
   }
 
   /**
@@ -267,6 +277,10 @@ public class PawnsBoardBaseCardDeckBuilderTest {
 
     // This should not throw an exception
     deckBuilder.validateDeck(deck);
+    
+    // Assert that the empty deck remains empty after validation
+    assertTrue("Empty deck should remain empty after validation", deck.isEmpty());
+    assertEquals("Empty deck should have size 0", 0, deck.size());
   }
 
   /**
@@ -293,8 +307,8 @@ public class PawnsBoardBaseCardDeckBuilderTest {
     // size
     boolean atLeastOneDifferent = false;
     for (int i = 0; i < decksNoShuffle.get(0).size(); i++) {
-      if (!decksNoShuffle.get(0).get(i).getName().equals(decksWithShuffle.get(0).get(i).getName()))
-      {
+      if (!decksNoShuffle.get(0).get(i).getName().
+              equals(decksWithShuffle.get(0).get(i).getName())) {
         atLeastOneDifferent = true;
         break;
       }

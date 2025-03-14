@@ -141,7 +141,7 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
   int[] getBoardDimensions() throws IllegalStateException;
 
   /**
-   * Gets the content type of the given cell position on the board with the given dimensions
+   * Gets the content type of the given cell position on the board with the given dimensions.
    *
    * @param row the row index of the cell
    * @param col the column index of the cell

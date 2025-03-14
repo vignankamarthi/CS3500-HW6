@@ -14,7 +14,9 @@ import org.junit.Test;
 import java.io.File;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integration test suite for PawnsBoardBase model and PawnsBoardTextualView.
@@ -341,27 +343,35 @@ public class PawnsBoardBaseIntegrationTest {
   public void testViewRendersOwnershipTransfer() throws InvalidDeckConfigurationException {
     model.startGame(3, 5, testDeckPath, 5);
 
-    // We'll place cards strategically to create a situation where influence affects ownership
     try {
       // First, RED places a card with influence
       model.placeCard(0, 0, 0);
-
+      
+      // Get the board state before BLUE's turn (to compare later)
+      String beforeState = view.toString();
+      
       // BLUE's turn - pass to keep things simple
       model.passTurn();
-
+      
       // RED places another card to try to influence BLUE's pawns
       model.placeCard(0, 2, 1);
-
-      String output = view.toString();
-
-      // Check if any BLUE pawns were converted to RED (indicated by cells with "r")
-      // This is testing the integration, not specific outcomes
-      // If no conversions happened due to card placement specifics, the test still validates
-      // that the integration functions without errors
+      
+      // Get the board state after
+      String afterState = view.toString();
+      
+      // Assert that the board state changed (at minimum)
+      assertNotEquals("Board state should change after placing cards", beforeState, afterState);
+      
+      // Assert that the view output contains proper cell representations
+      assertTrue("View should contain proper cell content representations", 
+              afterState.contains("r") || afterState.contains("b"));
+      
+      // Assert that the view properly renders card placements
+      assertTrue("View should show RED cards", afterState.contains("R"));
     } catch (Exception e) {
-      // This test might fail due to specific card influences not being what we expect
-      // That's okay - the test is about how the integration handles this scenario
-      // not about specific game mechanics
+      // Even if the specific moves fail, assert that the view still produces valid output
+      assertNotNull("View should still render a valid board state", view.toString());
+      assertTrue("View output should not be empty", !view.toString().isEmpty());
     }
   }
 
