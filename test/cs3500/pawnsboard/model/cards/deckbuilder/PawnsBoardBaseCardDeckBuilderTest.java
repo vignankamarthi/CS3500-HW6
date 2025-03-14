@@ -194,11 +194,11 @@ public class PawnsBoardBaseCardDeckBuilderTest {
 
     // This should not throw an exception
     deckBuilder.validateDeck(deck);
-    
-    // Assert that we reached this point without exceptions
-    assertTrue("Valid deck should pass validation without exceptions", true);
-    assertEquals("Deck should still contain the card after validation", 1, deck.size());
-    assertEquals("Card in deck should remain unchanged", "TestCard", deck.get(0).getName());
+
+    assertEquals("Deck should still contain the card after validation",
+            1, deck.size());
+    assertEquals("Card in deck should remain unchanged", "TestCard",
+            deck.get(0).getName());
   }
 
   /**

@@ -318,7 +318,9 @@ public class PawnsBoardBaseTest {
 
           // Check if pawn count increased
           if (model.getPawnCount(1, 0) > initialCount) {
-            assertTrue(true);
+            int newCount = model.getPawnCount(1, 0);
+            assertTrue("Pawn count should have increased",
+                    newCount > initialCount);
             return;
           }
         }
