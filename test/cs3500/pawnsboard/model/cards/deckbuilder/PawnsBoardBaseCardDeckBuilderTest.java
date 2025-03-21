@@ -24,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 public class PawnsBoardBaseCardDeckBuilderTest {
 
   private PawnsBoardBaseCardDeckBuilder deckBuilder;
-  private String validDeckPath;
-  private String smallDeckPath;
+  private String redValidDeckPath;
+  private String blueValidDeckPath;
   private PawnsBoardBaseCardFactory cardFactory;
 
   /**
@@ -37,8 +37,8 @@ public class PawnsBoardBaseCardDeckBuilderTest {
     cardFactory = new PawnsBoardBaseCardFactory();
 
     // Set up paths to test files
-    validDeckPath = "docs" + File.separator + "3x5TestingDeck.config";
-    smallDeckPath = "docs" + File.separator + "1x3SmallPawnsBoardBaseCompleteDeck.config";
+    redValidDeckPath = "docs" + File.separator + "RED3x5TestingDeck.config";
+    blueValidDeckPath = "docs" + File.separator + "BLUE3x5TestingDeck.config";
   }
 
   /**
@@ -52,101 +52,106 @@ public class PawnsBoardBaseCardDeckBuilderTest {
   }
 
   /**
-   * Test creating decks with a valid deck configuration file.
+   * Test creating a single deck with a valid deck configuration file.
    */
   @Test
-  public void testCreateDecks_ValidFile() throws InvalidDeckConfigurationException {
-    List<List<PawnsBoardBaseCard>> decks = deckBuilder.createDecks(validDeckPath);
-
-    // Verify we got two decks
-    assertEquals(2, decks.size());
-
-    // Verify decks have the same size
-    assertEquals(decks.get(0).size(), decks.get(1).size());
+  public void testCreateDeck_ValidFile() throws InvalidDeckConfigurationException {
+    List<PawnsBoardBaseCard> deck = deckBuilder.createDeck(redValidDeckPath);
 
     // Verify deck is not empty
-    assertFalse(decks.get(0).isEmpty());
-    assertFalse(decks.get(1).isEmpty());
+    assertFalse(deck.isEmpty());
+    
+    // First card should be Security (if using the test deck file)
+    assertEquals("Security", deck.get(0).getName());
+    assertEquals(1, deck.get(0).getCost());
+    assertEquals(2, deck.get(0).getValue());
   }
 
   /**
-   * Test creating decks with the shuffle parameter set to false.
+   * Test creating a single deck with the shuffle parameter set to false.
    */
   @Test
-  public void testCreateDecks_NoShuffle() throws InvalidDeckConfigurationException {
-    List<List<PawnsBoardBaseCard>> decks = deckBuilder.createDecks(validDeckPath, false);
+  public void testCreateDeck_NoShuffle() throws InvalidDeckConfigurationException {
+    List<PawnsBoardBaseCard> deck = deckBuilder.createDeck(redValidDeckPath, false);
 
     // With no shuffle, cards should be in the same order as in the file
-    // Check first card in both decks
-    PawnsBoardBaseCard redFirst = decks.get(0).get(0);
-    PawnsBoardBaseCard blueFirst = decks.get(1).get(0);
-
-    assertEquals("Security", redFirst.getName());
-    assertEquals("Security", blueFirst.getName());
-    assertEquals(1, redFirst.getCost());
-    assertEquals(1, blueFirst.getCost());
-    assertEquals(2, redFirst.getValue());
-    assertEquals(2, blueFirst.getValue());
+    // Check first card
+    PawnsBoardBaseCard firstCard = deck.get(0);
+    
+    assertEquals("Security", firstCard.getName());
+    assertEquals(1, firstCard.getCost());
+    assertEquals(2, firstCard.getValue());
   }
 
   /**
-   * Test creating decks with the shuffle parameter set to true.
+   * Test creating a single deck with the shuffle parameter set to true.
    * Note: This is a non-deterministic test due to shuffling.
-   * We can only check deck sizes and contents, not order.
+   * We can only check deck size and contents, not order.
    */
   @Test
-  public void testCreateDecks_WithShuffle() throws InvalidDeckConfigurationException {
-    List<List<PawnsBoardBaseCard>> decks = deckBuilder.createDecks(validDeckPath, true);
-
-    // Verify we got two decks in total
-    assertEquals(2, decks.size());
-
-    // Both decks should have the same size
-    assertEquals(decks.get(0).size(), decks.get(1).size());
+  public void testCreateDeck_WithShuffle() throws InvalidDeckConfigurationException {
+    List<PawnsBoardBaseCard> deck = deckBuilder.createDeck(redValidDeckPath, true);
 
     // Since we can't reliably test randomness, just verify cards exist
-    assertFalse(decks.get(0).isEmpty());
-    assertFalse(decks.get(1).isEmpty());
+    assertFalse(deck.isEmpty());
   }
 
   /**
-   * Test that mirroring works correctly for the blue player's cards.
+   * Test that separate RED and BLUE deck files work correctly.
    */
   @Test
-  public void testMirroringForBluePlayer() throws InvalidDeckConfigurationException {
-    List<List<PawnsBoardBaseCard>> decks = deckBuilder.createDecks(smallDeckPath, false);
-
-    // Get a card from both decks
-    PawnsBoardBaseCard redCard = decks.get(0).get(0);
-    PawnsBoardBaseCard blueCard = decks.get(1).get(0);
-
-    // Cards should have the same name, cost, and value
-    assertEquals(redCard.getName(), blueCard.getName());
-    assertEquals(redCard.getCost(), blueCard.getCost());
-    assertEquals(redCard.getValue(), blueCard.getValue());
-
-    // Convert influence grids to char arrays for easier comparison
-    char[][] redInfluence = redCard.getInfluenceGridAsChars();
-    char[][] blueInfluence = blueCard.getInfluenceGridAsChars();
-
-    // Center position should be the same in both
-    assertEquals(redInfluence[2][2], blueInfluence[2][2]);
-
-    // Check that blue influence is mirrored horizontally
-    for (int row = 0; row < 5; row++) {
-      for (int col = 0; col < 5; col++) {
-        assertEquals(redInfluence[row][col], blueInfluence[row][4 - col]);
+  public void testSeparateRedBlueDeckFiles() throws InvalidDeckConfigurationException {
+    List<PawnsBoardBaseCard> redDeck = deckBuilder.createDeck(redValidDeckPath, false);
+    List<PawnsBoardBaseCard> blueDeck = deckBuilder.createDeck(blueValidDeckPath, false);
+    
+    // Both decks should have the same number of cards
+    assertEquals(redDeck.size(), blueDeck.size());
+    
+    // Cards should have the same basic properties but different influence grids
+    for (int i = 0; i < redDeck.size(); i++) {
+      PawnsBoardBaseCard redCard = redDeck.get(i);
+      PawnsBoardBaseCard blueCard = blueDeck.get(i);
+      
+      // Same name, cost, and value
+      assertEquals(redCard.getName(), blueCard.getName());
+      assertEquals(redCard.getCost(), blueCard.getCost());
+      assertEquals(redCard.getValue(), blueCard.getValue());
+      
+      // Different influence grids (not testing specifics of mirroring here)
+      boolean allSame = true;
+      char[][] redInfluence = redCard.getInfluenceGridAsChars();
+      char[][] blueInfluence = blueCard.getInfluenceGridAsChars();
+      
+      for (int row = 0; row < 5 && allSame; row++) {
+        for (int col = 0; col < 5; col++) {
+          // Only checking outside the center position which is always 'C'
+          if ((row != 2 || col != 2) && redInfluence[row][col] != blueInfluence[row][col]) {
+            allSame = false;
+            break;
+          }
+        }
       }
+      
+      // At least some of the influence cells should be different
+      assertFalse("RED and BLUE cards should have different influence grids", allSame);
     }
   }
+
+
+
+
+
+
+
+
 
   /**
    * Test that an exception is thrown when the file path is invalid.
    */
   @Test
-  public void testCreateDecks_InvalidFilePath() {
+  public void testCreateDeck_InvalidFilePath() {
     try {
-      deckBuilder.createDecks("nonexistent/path.config");
+      deckBuilder.createDeck("nonexistent/path.config");
     } catch (IllegalArgumentException e) {
       assertEquals("File not found: nonexistent/path.config", e.getMessage());
     } catch (InvalidDeckConfigurationException e) {
@@ -158,11 +163,11 @@ public class PawnsBoardBaseCardDeckBuilderTest {
    * Test that an exception is thrown when the file has invalid format.
    */
   @Test
-  public void testCreateDecks_InvalidFileFormat() {
+  public void testCreateDeck_InvalidFileFormat() {
     try {
       // Create a temporary invalid format file path
       String invalidFormatPath = "test/invalid_format.config";
-      deckBuilder.createDecks(invalidFormatPath);
+      deckBuilder.createDeck(invalidFormatPath);
     } catch (IllegalArgumentException e) {
       assertEquals("File not found: test/invalid_format.config", e.getMessage());
     } catch (InvalidDeckConfigurationException e) {
@@ -284,31 +289,29 @@ public class PawnsBoardBaseCardDeckBuilderTest {
   }
 
   /**
-   * Test creating decks with both shuffle parameters results in different deck orders.
+   * Test creating a deck with both shuffle parameters results in different deck orders.
    * Note: This is a probabilistic test, and could rarely fail due to coincidental identical
    * shuffling.
    */
   @Test
-  public void testCreateDecks_ShuffleVsNoShuffle() throws InvalidDeckConfigurationException {
-    // Get decks without shuffling
-    List<List<PawnsBoardBaseCard>> decksNoShuffle = deckBuilder.createDecks(validDeckPath,
-            false);
+  public void testCreateDeck_ShuffleVsNoShuffle() throws InvalidDeckConfigurationException {
+    // Get deck without shuffling
+    List<PawnsBoardBaseCard> deckNoShuffle = deckBuilder.createDeck(redValidDeckPath, false);
 
-    // Get decks with shuffling
-    List<List<PawnsBoardBaseCard>> decksWithShuffle = deckBuilder.createDecks(validDeckPath,
-            true);
+    // Get deck with shuffling
+    List<PawnsBoardBaseCard> deckWithShuffle = deckBuilder.createDeck(redValidDeckPath, true);
 
     // Check that decks have the same size
-    assertEquals(decksNoShuffle.get(0).size(), decksWithShuffle.get(0).size());
+    assertEquals(deckNoShuffle.size(), deckWithShuffle.size());
 
     // Check that at least one card is in a different position
     // This is a probabilistic check - it could technically fail if the shuffle happens to
     // produce the exact same order, but this is extremely unlikely with a deck of any reasonable
     // size
     boolean atLeastOneDifferent = false;
-    for (int i = 0; i < decksNoShuffle.get(0).size(); i++) {
-      if (!decksNoShuffle.get(0).get(i).getName().
-              equals(decksWithShuffle.get(0).get(i).getName())) {
+    for (int i = 0; i < deckNoShuffle.size(); i++) {
+      if (!deckNoShuffle.get(i).getName().
+              equals(deckWithShuffle.get(i).getName())) {
         atLeastOneDifferent = true;
         break;
       }

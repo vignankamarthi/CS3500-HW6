@@ -27,7 +27,8 @@ public class PawnsBoardBaseIntegrationTest {
 
   private PawnsBoardBase<PawnsBoardBaseCard> model;
   private PawnsBoardTextualView<PawnsBoardBaseCard> view;
-  private String testDeckPath;
+  private String redTestDeckPath;
+  private String blueTestDeckPath;
 
   /**
    * Sets up a fresh model, view, and test deck path for each test.
@@ -36,7 +37,8 @@ public class PawnsBoardBaseIntegrationTest {
   public void setUp() {
     model = new PawnsBoardBase<>();
     view = new PawnsBoardTextualView<>(model);
-    testDeckPath = "docs" + File.separator + "3x5TestingDeck.config";
+    redTestDeckPath = "docs" + File.separator + "RED3x5TestingDeck.config";
+    blueTestDeckPath = "docs" + File.separator + "BLUE3x5TestingDeck.config";
   }
 
   /**
@@ -55,7 +57,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testViewRendersInitialBoard() throws InvalidDeckConfigurationException {
     // Start with a 3x5 board
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     String output = view.toString();
     String expected = "0 1r __ __ __ 1b 0\n"
@@ -72,7 +74,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testViewRendersCardPlacement() throws InvalidDeckConfigurationException,
           IllegalAccessException, IllegalOwnerException, IllegalCardException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // RED player places a card at (0,0)
     model.placeCard(0, 0, 0);
@@ -97,7 +99,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testRenderGameState() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     String output = view.renderGameState();
     
@@ -130,7 +132,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testViewAfterMultipleMoves() throws InvalidDeckConfigurationException,
           IllegalAccessException, IllegalOwnerException, IllegalCardException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // RED player places a card
     model.placeCard(0, 0, 0);
@@ -161,7 +163,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testViewRendersGameOverTie() throws InvalidDeckConfigurationException,
           IllegalOwnerException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // End the game with both players passing
     model.passTurn(); // RED passes
@@ -193,7 +195,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testViewRendersGameWithWinner() throws InvalidDeckConfigurationException,
           IllegalAccessException, IllegalOwnerException, IllegalCardException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // RED player places a card (gives them points in row 0)
     model.placeCard(0, 0, 0);
@@ -227,7 +229,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testCustomHeaderMessage() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     String output = view.renderGameState("Test Header");
     
@@ -241,7 +243,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testViewRendersPlayerHand() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     String output = view.renderPlayerHand(PlayerColors.RED);
     
@@ -272,7 +274,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testViewRendersDifferentPawnCounts() throws InvalidDeckConfigurationException,
           IllegalAccessException, IllegalOwnerException, IllegalCardException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // Play a sequence that creates cells with 2 pawns
     model.placeCard(0, 0, 0); // RED places card, potentially influencing
@@ -298,7 +300,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testViewRendersRowScores() throws InvalidDeckConfigurationException,
           IllegalAccessException, IllegalOwnerException, IllegalCardException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // Get the expected value score of the first card
     int expectedValue = model.getPlayerHand(PlayerColors.RED).get(0).getValue();
@@ -321,7 +323,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testNonStandardBoardSize() throws InvalidDeckConfigurationException {
     // Create a taller 5x3 board
-    model.startGame(5, 3, testDeckPath, 5);
+    model.startGame(5, 3, redTestDeckPath, blueTestDeckPath, 5);
 
     String output = view.toString();
     String[] rows = output.split("\n");
@@ -341,7 +343,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testViewRendersOwnershipTransfer() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     try {
       // First, RED places a card with influence
@@ -380,7 +382,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testFullBoardRendering() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // Create a simulated full board by making moves
     try {
@@ -421,7 +423,7 @@ public class PawnsBoardBaseIntegrationTest {
   public void testEmptyHandRendering() throws InvalidDeckConfigurationException,
           IllegalAccessException, IllegalOwnerException, IllegalCardException {
     // Start with a minimal hand size
-    model.startGame(3, 5, testDeckPath, 1);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 1);
 
     // RED plays their only card
     model.placeCard(0, 0, 0);
@@ -435,7 +437,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testViewHandlesModelExceptions() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // Attempt to render an invalid cell (out of bounds)
     // The view should handle this safely without crashing
@@ -449,7 +451,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testComplexBoardState() throws InvalidDeckConfigurationException,
           IllegalAccessException, IllegalOwnerException, IllegalCardException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // RED player places a card
     model.placeCard(0, 0, 0);
@@ -481,8 +483,7 @@ public class PawnsBoardBaseIntegrationTest {
     boolean exceptionThrown = false;
     String errorMessage = "";
     try {
-      model.startGame(3, 5, "invalid/path.config",
-              5);
+      model.startGame(3, 5, "invalid/path.config", "invalid/path.config", 5);
     } catch (InvalidDeckConfigurationException | IllegalArgumentException e) {
       exceptionThrown = true;
       errorMessage = e.getMessage();
@@ -504,14 +505,14 @@ public class PawnsBoardBaseIntegrationTest {
   public void testInvalidBoardDimensions() {
     try {
       // 0 rows is invalid
-      model.startGame(0, 5, testDeckPath, 5);
+      model.startGame(0, 5, redTestDeckPath, blueTestDeckPath, 5);
     } catch (IllegalArgumentException | InvalidDeckConfigurationException e) {
       assertEquals(true, e.getMessage().contains("Number of rows must be positive"));
     }
 
     try {
       // Even number of columns is invalid
-      model.startGame(3, 4, testDeckPath, 5);
+      model.startGame(3, 4, redTestDeckPath, blueTestDeckPath, 5);
     } catch (IllegalArgumentException | InvalidDeckConfigurationException e) {
       assertEquals(true, e.getMessage().contains("Number of columns must be odd"));
     }
@@ -526,7 +527,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testGameCompletionAndWinner() throws InvalidDeckConfigurationException,
           IllegalOwnerException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // Play the game until completion (both players pass)
     model.passTurn(); // RED passes
@@ -561,7 +562,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testPlaceCardInsufficientPawns() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // Find a card with cost > 1
     int cardIndex = -1;
@@ -599,7 +600,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testPlaceCardOnOpponentPawns() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // Test exception for placing card on opponent's pawns
     boolean exceptionThrown = false;
@@ -626,7 +627,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testPlaceCardInvalidIndex() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // Test exception for invalid card index
     boolean exceptionThrown = false;
@@ -653,7 +654,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testViewAfterPlayerPass() throws InvalidDeckConfigurationException,
           IllegalOwnerException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // RED passes
     model.passTurn();
@@ -674,7 +675,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testAccessWinnerGameNotOver() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // Game just started, not over yet
     assertEquals(false, model.isGameOver());
@@ -700,7 +701,7 @@ public class PawnsBoardBaseIntegrationTest {
    */
   @Test
   public void testViewRendersMaxPawnCount() throws InvalidDeckConfigurationException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // We need to strategically place cards to create cells with max pawns
     // For the integration test, we'll just verify that the view can render
@@ -720,7 +721,7 @@ public class PawnsBoardBaseIntegrationTest {
   @Test
   public void testNoValidMovesState() throws InvalidDeckConfigurationException,
           IllegalOwnerException {
-    model.startGame(3, 5, testDeckPath, 5);
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
 
     // To create a no-valid-moves state, we'd need complex setup with specific cards
     // For integration testing, we'll just verify that the view continues to function

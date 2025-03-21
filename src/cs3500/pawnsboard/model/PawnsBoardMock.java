@@ -329,19 +329,24 @@ public class PawnsBoardMock<C extends Card, E extends PawnsBoardCell<C>>
   //-----------------------------------------------------------------------
 
   /**
-   * Mock implementation of startGame.
-   * This method is a no-op in the mock as the game state is set directly
-   * through the setter methods.
+   * Initializes and starts a new game with the specified parameters.
+   * Sets up the board with rows and columns, initializes player decks from the deck configuration
+   * files, deals cards to each player's hand, and sets the first player.
    *
    * @param rows the number of rows on the board
    * @param cols the number of columns on the board
-   * @param deckConfigPath path to the deck configuration file
+   * @param redDeckConfigPath path to the RED player's deck configuration file
+   * @param blueDeckConfigPath path to the BLUE player's deck configuration file
    * @param startingHandSize the number of cards each player starts with
-   * @throws IllegalArgumentException if any parameters are invalid
-   * @throws InvalidDeckConfigurationException if deck configuration is invalid
+   * @throws IllegalArgumentException if any of the dimensional parameters are invalid
+   * @throws IllegalArgumentException if the starting hand size is too large
+   * @throws InvalidDeckConfigurationException if deck configuration is invalid or cannot be
+   *                                           read
    */
   @Override
-  public void startGame(int rows, int cols, String deckConfigPath, int startingHandSize) {
+  public void startGame(int rows, int cols, String redDeckConfigPath,
+                        String blueDeckConfigPath, int startingHandSize)
+          throws IllegalArgumentException, InvalidDeckConfigurationException {
     // Do nothing, this is a mock
   }
 

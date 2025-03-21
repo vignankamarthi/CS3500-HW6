@@ -48,6 +48,8 @@ public class PawnsBoardBase<C extends Card>
         extends AbstractPawnsBoard<C, PawnsBoardBaseCell<C>> {
 
   // Board state - using List of Lists instead of arrays for type safety
+  // Note: The coordinate system used is 0-indexed and based off of the top left being the location
+  // of the origin (0, 0).
   private List<List<PawnsBoardCell<C>>> board;
 
   // Deck builder for card reading
@@ -77,21 +79,23 @@ public class PawnsBoardBase<C extends Card>
   /**
    * Initializes and starts a new game with the specified parameters.
    * Sets up the board with rows and columns, initializes player decks from the deck configuration
-   * file, deals cards to each player's hand, and sets the first player.
+   * files, deals cards to each player's hand, and sets the first player.
    *
    * <p>For rectangular boards, rows must be positive and columns must be odd and greater than 1.
    * The starting pawns are placed in the first and last columns.</p>
    *
    * @param rows the number of rows on the board
    * @param cols the number of columns on the board
-   * @param deckConfigPath path to the deck configuration file
+   * @param redDeckConfigPath path to the RED player's deck configuration file
+   * @param blueDeckConfigPath path to the BLUE player's deck configuration file
    * @param startingHandSize the number of cards each player starts with
    * @throws IllegalArgumentException if any of the dimensional parameters are invalid
    * @throws IllegalArgumentException if the starting hand size is too large
    * @throws InvalidDeckConfigurationException if deck configuration is invalid or cannot be read
    */
   @Override
-  public void startGame(int rows, int cols, String deckConfigPath, int startingHandSize)
+  public void startGame(int rows, int cols, String redDeckConfigPath,
+                        String blueDeckConfigPath, int startingHandSize)
           throws IllegalArgumentException, InvalidDeckConfigurationException {
     // Validate dimensions
     validateBoardDimensions(rows, cols);
@@ -104,13 +108,12 @@ public class PawnsBoardBase<C extends Card>
     this.columns = cols;
     board = createEmptyBoard(rows, cols);
 
-    List<List<C>> decks = deckBuilder.createDecks(deckConfigPath, false);
-    if (decks.size() != 2) {
-      throw new InvalidDeckConfigurationException("Expected 2 decks, got " + decks.size());
-    }
+    // Read decks from separate files for RED and BLUE players
+    List<C> redDeckCards = deckBuilder.createDeck(redDeckConfigPath, false);
+    List<C> blueDeckCards = deckBuilder.createDeck(blueDeckConfigPath, false);
 
-    redDeck = decks.get(0);
-    blueDeck = decks.get(1);
+    redDeck = redDeckCards;
+    blueDeck = blueDeckCards;
 
     int minDeckSize = rows * cols;
     if (redDeck.size() < minDeckSize || blueDeck.size() < minDeckSize) {
@@ -284,7 +287,7 @@ public class PawnsBoardBase<C extends Card>
    * Gets the row scores for both players for a specific row.
    * The row score is calculated by summing the value scores of each player's cards on that row.
    *
-   * @param row the row index to calculate scores for
+   * @param row the row index to calculate scores for (zero-indexed)
    * @return an array where the first element is Red's score for the row and the second is Blue's
    * @throws IllegalArgumentException if the row is out of bounds
    * @throws IllegalStateException if the game hasn't been started
@@ -380,6 +383,8 @@ public class PawnsBoardBase<C extends Card>
     } catch (IllegalOwnerException e) {
       // This should never happen during initialization with empty cells
       throw new IllegalStateException("Error initializing board: " + e.getMessage());
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
     }
   }
 
@@ -489,6 +494,8 @@ public class PawnsBoardBase<C extends Card>
     } catch (IllegalOwnerException e) {
       // This should not happen with the current implementation
       throw new IllegalStateException("Error applying influence: " + e.getMessage());
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
     }
   }
   

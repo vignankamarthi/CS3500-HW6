@@ -13,27 +13,28 @@ import java.util.List;
 public interface DeckBuilder<C extends Card> {
 
   /**
-   * Creates decks for both players from a configuration file.
+   * Creates a single deck from a configuration file.
    *
    * @param filePath path to the {@link Card} configuration file
-   * @return a list containing two decks (lists of cards): one for each player
+   * @return a list of cards representing a deck
    * @throws InvalidDeckConfigurationException if the deck configuration is invalid
    */
-  List<List<C>> createDecks(String filePath) throws InvalidDeckConfigurationException;
+  List<C> createDeck(String filePath) throws InvalidDeckConfigurationException;
 
   /**
-   * Creates decks for both players with optional shuffling.
+   * Creates a single deck with optional shuffling.
    *
    * @param filePath path to the card configuration file
-   * @param shuffle whether to shuffle the decks
-   * @return a list containing two decks (lists of cards): one for each player
+   * @param shuffle whether to shuffle the deck
+   * @return a list of cards representing a deck
    * @throws InvalidDeckConfigurationException if the deck configuration is invalid
    */
-  List<List<C>> createDecks(String filePath, boolean shuffle)
+  List<C> createDeck(String filePath, boolean shuffle)
           throws InvalidDeckConfigurationException;
 
+
   /**
-   * Validates that a deck follows the {@link PawnsBoard}  rules.
+   * Validates that a deck follows the {@link PawnsBoard} rules.
    *
    * @param deck the deck to validate
    * @throws InvalidDeckConfigurationException if the deck doesn't follow game rules

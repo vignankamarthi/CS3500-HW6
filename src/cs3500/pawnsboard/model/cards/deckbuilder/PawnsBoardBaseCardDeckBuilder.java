@@ -30,50 +30,45 @@ public class PawnsBoardBaseCardDeckBuilder implements DeckBuilder<PawnsBoardBase
     this.cardFactory = new PawnsBoardBaseCardFactory();
     this.cardReader = new PawnsBoardBaseCardReader(cardFactory);
   }
-
+  
   /**
-   * Creates decks for both players from a configuration file.
+   * Creates a single deck from a configuration file.
    *
    * @param filePath path to the {@link Card} configuration file
-   * @return a list containing two decks (lists of {@link PawnsBoardBaseCard}s): one for each player
+   * @return a list of cards representing a deck
    * @throws InvalidDeckConfigurationException if the deck configuration is invalid
    */
   @Override
-  public List<List<PawnsBoardBaseCard>> createDecks(String filePath)
+  public List<PawnsBoardBaseCard> createDeck(String filePath)
           throws InvalidDeckConfigurationException {
-    return createDecks(filePath, true);
+    return createDeck(filePath, true);
   }
 
   /**
-   * Creates decks for both players with optional shuffling.
+   * Creates a single deck with optional shuffling.
    *
    * @param filePath path to the card configuration file
-   * @param shuffle whether to shuffle the decks
-   * @return a list containing two decks (lists of {@link PawnsBoardBaseCard}s): one for each player
+   * @param shuffle whether to shuffle the deck
+   * @return a list of cards representing a deck
    * @throws InvalidDeckConfigurationException if the deck configuration is invalid
    */
   @Override
-  public List<List<PawnsBoardBaseCard>> createDecks(String filePath, boolean shuffle)
+  public List<PawnsBoardBaseCard> createDeck(String filePath, boolean shuffle)
           throws InvalidDeckConfigurationException {
     // Read cards from file
-    List<PawnsBoardBaseCard> originalCards = new ArrayList<>();
-    originalCards.addAll(cardReader.readCards(filePath));
+    List<PawnsBoardBaseCard> cards = new ArrayList<>(cardReader.readCards(filePath));
 
     // Validate deck
-    validateDeck(originalCards);
+    validateDeck(cards);
 
-    // Create mirrored cards for blue player
-    List<PawnsBoardBaseCard> mirroredCards = createMirroredCards(originalCards);
-
-    // Shuffle the decks if requested
+    // Shuffle the deck if requested
     if (shuffle) {
-      Collections.shuffle(originalCards);
-      Collections.shuffle(mirroredCards);
+      Collections.shuffle(cards);
     }
 
-    // Return both lists
-    return Arrays.asList(originalCards, mirroredCards);
+    return cards;
   }
+
 
   /**
    * Validates that a deck follows the {@link cs3500.pawnsboard.model.PawnsBoard} rules.

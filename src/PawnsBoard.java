@@ -86,11 +86,12 @@ public class PawnsBoard {
     // Create the model
     PawnsBoardBase<PawnsBoardBaseCard> model = new PawnsBoardBase<>();
 
-    // Read our sequential deck configuration file
-    String deckConfigPath = "docs" + File.separator + "3x5PawnsBoardBaseCompleteDeck.config";
+    // Read our sequential deck configuration files
+    String redDeckPath = "docs" + File.separator + "RED3x5PawnsBoardBaseCompleteDeck.config";
+    String blueDeckPath = "docs" + File.separator + "BLUE3x5PawnsBoardBaseCompleteDeck.config";
 
-    // Initialize game with 3 rows, 5 columns, and starting hand size of 5
-    model.startGame(3, 5, deckConfigPath, 5);
+    // Initialize game with 3 rows, 5 columns, starting hand size of 5, and deck starting size of 15
+    model.startGame(3, 5, redDeckPath, blueDeckPath, 5);
 
     // Create the view
     PawnsBoardTextualView<PawnsBoardBaseCard> view = new PawnsBoardTextualView<>(model);

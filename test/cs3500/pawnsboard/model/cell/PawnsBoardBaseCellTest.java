@@ -49,7 +49,7 @@ public class PawnsBoardBaseCellTest {
    * Tests adding a single pawn to an empty cell.
    */
   @Test
-  public void testAddFirstPawn() throws IllegalOwnerException {
+  public void testAddFirstPawn() throws Exception {
     cell.addPawn(PlayerColors.RED);
 
     assertEquals(CellContent.PAWNS, cell.getContent());
@@ -62,7 +62,7 @@ public class PawnsBoardBaseCellTest {
    * Tests adding a second pawn to a cell that already has one pawn.
    */
   @Test
-  public void testAddSecondPawn() throws IllegalOwnerException {
+  public void testAddSecondPawn() throws Exception {
     cell.addPawn(PlayerColors.RED);
     cell.addPawn(PlayerColors.RED);
 
@@ -75,7 +75,7 @@ public class PawnsBoardBaseCellTest {
    * Tests adding a third pawn to a cell that already has two pawns.
    */
   @Test
-  public void testAddThirdPawn() throws IllegalOwnerException {
+  public void testAddThirdPawn() throws Exception {
     cell.addPawn(PlayerColors.RED);
     cell.addPawn(PlayerColors.RED);
     cell.addPawn(PlayerColors.RED);
@@ -89,7 +89,7 @@ public class PawnsBoardBaseCellTest {
    * Tests that adding a fourth pawn throws an IllegalStateException.
    */
   @Test
-  public void testAddFourthPawn() throws IllegalOwnerException {
+  public void testAddFourthPawn() throws Exception {
     cell.addPawn(PlayerColors.RED);
     cell.addPawn(PlayerColors.RED);
     cell.addPawn(PlayerColors.RED);
@@ -110,7 +110,7 @@ public class PawnsBoardBaseCellTest {
    * Tests that adding a pawn of a different owner throws an IllegalOwnerException.
    */
   @Test
-  public void testAddPawnDifferentOwner() throws IllegalOwnerException {
+  public void testAddPawnDifferentOwner() throws Exception {
     cell.addPawn(PlayerColors.RED);
 
     String expectedMessage = "Cannot add pawn of different owner";
@@ -143,6 +143,8 @@ public class PawnsBoardBaseCellTest {
       cell.addPawn(PlayerColors.RED);
     } catch (IllegalStateException e) {
       actualMessage = e.getMessage();
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
     }
 
     assertEquals(expectedMessage, actualMessage);
@@ -156,7 +158,7 @@ public class PawnsBoardBaseCellTest {
    * Tests changing ownership of pawns in a cell.
    */
   @Test
-  public void testChangeOwnership() throws IllegalOwnerException {
+  public void testChangeOwnership() throws Exception {
     cell.addPawn(PlayerColors.RED);
     cell.addPawn(PlayerColors.RED);
     cell.changeOwnership(PlayerColors.BLUE);
@@ -221,7 +223,7 @@ public class PawnsBoardBaseCellTest {
    * Tests setting a card in a cell that already has pawns.
    */
   @Test
-  public void testSetCardInCellWithPawns() throws IllegalOwnerException {
+  public void testSetCardInCellWithPawns() throws Exception {
     cell.addPawn(PlayerColors.RED);
     cell.addPawn(PlayerColors.RED);
 
@@ -262,6 +264,8 @@ public class PawnsBoardBaseCellTest {
       cell.addPawn(null);
     } catch (IllegalArgumentException e) {
       actualMessage = e.getMessage();
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
     }
 
     assertEquals(expectedMessage, actualMessage);
@@ -271,7 +275,7 @@ public class PawnsBoardBaseCellTest {
    * Tests that getCard returns null when cell has pawns.
    */
   @Test
-  public void testGetCardWhenCellHasPawns() throws IllegalOwnerException {
+  public void testGetCardWhenCellHasPawns() throws Exception {
     cell.addPawn(PlayerColors.RED);
     assertNull(cell.getCard());
   }
