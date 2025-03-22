@@ -356,4 +356,128 @@ public class PawnsBoardMockTest {
     mockModel.setGameStarted(true);
     mockModel.getRemainingDeckSize(null);
   }
+
+  /**
+   * Tests the isLegalMove method returns true for valid parameters.
+   * Verifies that the mock implementation correctly validates move parameters.
+   * For the mock, we consider a move legal if the card index is within range
+   * and the coordinates are valid.
+   */
+  @Test
+  public void testIsLegalMove_ValidParameters() {
+    // Create a non-empty hand with a dummy card
+    List<PawnsBoardBaseCard> sampleHand = new ArrayList<>();
+    sampleHand.add(testCard);
+    
+    mockModel.setGameStarted(true)
+            .setGameOver(false)
+            .setBoardDimensions(3, 5)
+            .setPlayerHand(PlayerColors.RED, sampleHand)
+            .setCurrentPlayer(PlayerColors.RED);
+
+    // Should return true for valid coordinates and card index
+    assertTrue(mockModel.isLegalMove(0, 1, 1));
+  }
+
+  /**
+   * Tests the isLegalMove method returns false for invalid card index.
+   * Verifies that the mock implementation correctly identifies illegal moves
+   * due to invalid card index. The mock should return false when the card index
+   * is outside the range of the player's hand.
+   */
+  @Test
+  public void testIsLegalMove_InvalidCardIndex() {
+    // Create a non-empty hand with a dummy card
+    List<PawnsBoardBaseCard> sampleHand = new ArrayList<>();
+    sampleHand.add(testCard);
+    
+    mockModel.setGameStarted(true)
+            .setGameOver(false)
+            .setBoardDimensions(3, 5)
+            .setPlayerHand(PlayerColors.RED, sampleHand)
+            .setCurrentPlayer(PlayerColors.RED);
+
+    // Should return false for invalid card index
+    assertFalse(mockModel.isLegalMove(10, 1, 1));
+  }
+
+  /**
+   * Tests that isLegalMove throws exception when game is not started.
+   * Verifies that the mock implementation correctly validates game state
+   * before checking move legality. An IllegalStateException should be thrown
+   * when the game has not been started.
+   */
+  @Test(expected = IllegalStateException.class)
+  public void testIsLegalMove_GameNotStarted() {
+    mockModel.isLegalMove(0, 0, 0);
+  }
+
+  /**
+   * Tests that isLegalMove throws exception when game is over.
+   * Verifies that the mock implementation correctly validates game state
+   * before checking move legality. An IllegalStateException should be thrown
+   * when the game is already over, as no moves are legal at that point.
+   */
+  @Test(expected = IllegalStateException.class)
+  public void testIsLegalMove_GameOver() {
+    mockModel.setGameStarted(true)
+             .setGameOver(true);
+    mockModel.isLegalMove(0, 0, 0);
+  }
+
+  /**
+   * Tests that isLegalMove throws exception for invalid coordinates.
+   * Verifies that the mock implementation correctly validates the coordinates
+   * before checking move legality. An IllegalArgumentException should be thrown
+   * when the coordinates are outside the board boundaries.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testIsLegalMove_InvalidCoordinates() {
+    mockModel.setGameStarted(true)
+             .setBoardDimensions(3, 5);
+    mockModel.isLegalMove(0, 10, 10);
+  }
+
+  /**
+   * Tests that copy method creates an independent copy with the same state.
+   * Verifies that the mock implementation correctly creates a deep copy of the model.
+   * This test sets up a mock with a specific state, creates a copy, and then
+   * checks that all state attributes are correctly copied. It also tests that
+   * changes to the original don't affect the copy, demonstrating independence.
+   */
+  @Test
+  public void testCopy_IndependentCopy() {
+    // Setup a mock with some state
+    mockModel.setGameStarted(true)
+             .setBoardDimensions(3, 5)
+             .setCurrentPlayer(PlayerColors.RED)
+             .setCellContent(0, 0, CellContent.PAWNS)
+             .setCellOwner(0, 0, PlayerColors.RED)
+             .setPawnCount(0, 0, 1);
+
+    // Create a copy
+    PawnsBoard<?, ?> copy = mockModel.copy();
+
+    // Verify the copy has the same state
+    assertFalse(copy.isGameOver());
+    assertEquals(PlayerColors.RED, copy.getCurrentPlayer());
+    assertEquals(CellContent.PAWNS, copy.getCellContent(0, 0));
+    assertEquals(PlayerColors.RED, copy.getCellOwner(0, 0));
+    assertEquals(1, copy.getPawnCount(0, 0));
+
+    // Verify the copy is independent by modifying the original
+    mockModel.setCurrentPlayer(PlayerColors.BLUE);
+    assertEquals(PlayerColors.RED, copy.getCurrentPlayer());
+  }
+
+  /**
+   * Tests that copy throws exception when game is not started.
+   * Verifies that the mock implementation correctly validates the game state
+   * before attempting to create a copy. An IllegalStateException should be thrown
+   * when trying to copy a game that hasn't been started yet.
+   */
+  @Test(expected = IllegalStateException.class)
+  public void testCopy_GameNotStarted() {
+    mockModel.copy();
+  }
 }

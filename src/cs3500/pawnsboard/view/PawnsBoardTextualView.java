@@ -1,6 +1,6 @@
 package cs3500.pawnsboard.view;
 
-import cs3500.pawnsboard.model.PawnsBoard;
+import cs3500.pawnsboard.model.ReadOnlyPawnsBoard;
 import cs3500.pawnsboard.model.enumerations.CellContent;
 import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.cards.Card;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class PawnsBoardTextualView<C extends Card> implements PawnsBoardView {
   
-  private final PawnsBoard<C, ?> model;
+  private final ReadOnlyPawnsBoard<C, ?> model;
   
   /**
    * Constructs a text view with the specified model.
@@ -29,7 +29,7 @@ public class PawnsBoardTextualView<C extends Card> implements PawnsBoardView {
    * @param model the game model to display
    * @throws IllegalArgumentException if model is null
    */
-  public PawnsBoardTextualView(PawnsBoard<C, ?> model) {
+  public PawnsBoardTextualView(ReadOnlyPawnsBoard<C, ?> model) {
     if (model == null) {
       throw new IllegalArgumentException("Model cannot be null");
     }

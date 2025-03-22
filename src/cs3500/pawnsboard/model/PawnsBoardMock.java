@@ -593,6 +593,71 @@ public class PawnsBoardMock<C extends Card, E extends PawnsBoardCell<C>>
     validateCoordinates(row, col);
     return cellCards.get(cellKey(row, col));
   }
+  
+  /**
+   * Mock implementation of isLegalMove that checks if the requested move is valid.
+   * For the mock implementation, we simply check if the card index is within bounds
+   * and the coordinates are valid.
+   *
+   * @param cardIndex the index of the card in the current player's hand
+   * @param row the row index where the card would be placed
+   * @param col the column index where the card would be placed
+   * @return true if the move appears to be legal, false otherwise
+   * @throws IllegalArgumentException if the coordinates are invalid
+   * @throws IllegalStateException if the game hasn't been started or is already over
+   */
+  @Override
+  public boolean isLegalMove(int cardIndex, int row, int col) 
+          throws IllegalArgumentException, IllegalStateException {
+    if (!gameStarted) {
+      throw new IllegalStateException("Game has not been started");
+    }
+    if (gameOver) {
+      throw new IllegalStateException("Game is already over");
+    }
+    validateCoordinates(row, col);
+    
+    // For the mock class, we'll just check if coordinates are valid and card index is within range
+    List<C> hand = getPlayerHand(currentPlayer);
+    return cardIndex >= 0 && cardIndex < hand.size();
+  }
+  
+  /**
+   * Implementation of the copy method that creates a new mock with the same state.
+   * Creates a perfect duplicate of the current mock model for simulation purposes.
+   *
+   * @return a new PawnsBoardMock instance with the same state as this one
+   * @throws IllegalStateException if the game hasn't been started
+   */
+  @Override
+  public PawnsBoard<C, E> copy() throws IllegalStateException {
+    if (!gameStarted) {
+      throw new IllegalStateException("Game has not been started");
+    }
+    
+    // Create a new mock with the same state
+    PawnsBoardMock<C, E> copy = new PawnsBoardMock<>();
+    
+    // Copy all state
+    copy.gameStarted = this.gameStarted;
+    copy.gameOver = this.gameOver;
+    copy.currentPlayer = this.currentPlayer;
+    copy.rows = this.rows;
+    copy.columns = this.columns;
+    copy.cellContents.putAll(this.cellContents);
+    copy.cellOwners.putAll(this.cellOwners);
+    copy.pawnCounts.putAll(this.pawnCounts);
+    copy.cellCards.putAll(this.cellCards);
+    copy.rowScores.putAll(this.rowScores);
+    copy.redHand.addAll(this.redHand);
+    copy.blueHand.addAll(this.blueHand);
+    copy.totalScore = this.totalScore.clone();
+    copy.winner = this.winner;
+    copy.redDeckSize = this.redDeckSize;
+    copy.blueDeckSize = this.blueDeckSize;
+    
+    return copy;
+  }
 
   /**
    * Validates that the given coordinates are within the board bounds.

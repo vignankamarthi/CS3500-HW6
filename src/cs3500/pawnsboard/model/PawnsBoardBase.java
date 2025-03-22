@@ -522,4 +522,56 @@ public class PawnsBoardBase<C extends Card>
     
     return cell.getCard();
   }
+
+  @Override
+  public PawnsBoard<C, PawnsBoardBaseCell<C>> copy() throws IllegalStateException {
+  validateGameStarted();
+  
+  PawnsBoardBase<C> copy = new PawnsBoardBase<>();
+  
+  // Copy basic game state
+  copy.gameStarted = this.gameStarted;
+  copy.gameOver = this.gameOver;
+  copy.currentPlayerColors = this.currentPlayerColors;
+  copy.lastPlayerPassed = this.lastPlayerPassed;
+  copy.startingHandSize = this.startingHandSize;
+  copy.rows = this.rows;
+  copy.columns = this.columns;
+  
+  // Deep copy of the board
+  copy.board = new ArrayList<>(rows);
+  for (int r = 0; r < rows; r++) {
+  List<PawnsBoardCell<C>> rowCopy = new ArrayList<>(columns);
+  for (int c = 0; c < columns; c++) {
+  PawnsBoardCell<C> originalCell = this.board.get(r).get(c);
+  PawnsBoardBaseCell<C> cellCopy = new PawnsBoardBaseCell<>();
+  
+  // Copy cell state
+  if (originalCell.getContent() == CellContent.PAWNS) {
+  // Add pawns to the cell
+  for (int i = 0; i < originalCell.getPawnCount(); i++) {
+  try {
+  cellCopy.addPawn(originalCell.getOwner());
+  } catch (Exception e) {
+  throw new IllegalStateException("Error copying pawn: " + e.getMessage());
+  }
+  }
+  } else if (originalCell.getContent() == CellContent.CARD) {
+  // Set card on the cell
+  cellCopy.setCard(originalCell.getCard(), originalCell.getOwner());
+  }
+  
+  rowCopy.add(cellCopy);
+  }
+  copy.board.add(rowCopy);
+  }
+  
+  // Deep copy of decks and hands
+  copy.redDeck = new ArrayList<>(this.redDeck);
+  copy.blueDeck = new ArrayList<>(this.blueDeck);
+  copy.redHand = new ArrayList<>(this.redHand);
+  copy.blueHand = new ArrayList<>(this.blueHand);
+  
+  return copy;
+  }
 }

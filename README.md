@@ -112,3 +112,35 @@ The project includes comprehensive tests:
 - Mock model implementations for controlled testing
 
 To run the tests, use JUnit4 through your IDE or build system.
+
+## Changes for part 2
+
+### Refactoring the Model Interfaces
+
+In this iteration, we made several important changes to improve the model design and provide better support for the view and future AI players:
+
+1. **Read-Only Interface**: 
+   - The existing `PawnsBoard` interface now extends a new `ReadOnlyPawnsBoard` interface
+   - `ReadOnlyPawnsBoard` contains all observation methods for viewing the game state
+   - This separation ensures that views can only read the game state, not modify it
+
+2. **Added Missing Functionality**:
+
+   - **Move Legality Checking**:
+     - Added `isLegalMove(int cardIndex, int row, int col)` method to check if a move is legal without actually making it
+     - Previously, the only way to check move legality was to attempt the move and catch exceptions
+     - This addition helps AI strategies evaluate possible moves without modifying the game state
+     - Implemented in both `AbstractPawnsBoard` and `PawnsBoardMock` classes
+
+   - **Board Copying**:
+     - Added `copy()` method to create a deep copy of the board state
+     - This allows AI players to simulate potential moves and evaluate their outcomes
+     - The copy is completely independent and changes to it don't affect the original game
+     - Implemented in both `PawnsBoardBase` and `PawnsBoardMock` classes
+
+3. **Comprehensive Testing**:
+   - Added thorough tests for both new methods
+   - Tests verify correct behavior for various scenarios (valid moves, invalid moves, game not started, etc.)
+   - Tests ensure that the copy maintains the expected behavior of being truly independent from the original game
+
+These changes enhance the model's capabilities for strategy implementation in future assignments and maintain proper MVC architecture by preventing views from modifying the model directly.

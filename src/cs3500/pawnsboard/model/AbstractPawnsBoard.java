@@ -312,4 +312,63 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
     // This method needs implementation in subclasses that know about the board structure
     throw new UnsupportedOperationException("Method must be implemented by subclasses");
   }
+  
+  /**
+   * Checks if it's legal for the current player to place a specific card at the given coordinates.
+   * This method allows checking move legality without actually making the move.
+   * A move is legal if all the following conditions are met:
+   * - The game is in progress (started and not over)
+   * - The card index is valid
+   * - The cell contains pawns
+   * - The pawns are owned by the current player
+   * - There are enough pawns to cover the card's cost
+   *
+   * @param cardIndex the index of the card in the current player's hand
+   * @param row the row index where the card would be placed
+   * @param col the column index where the card would be placed
+   * @return true if the move is legal, false otherwise
+   * @throws IllegalArgumentException if the coordinates are invalid
+   * @throws IllegalStateException if the game hasn't been started or is already over
+   */
+  @Override
+  public boolean isLegalMove(int cardIndex, int row, int col)
+          throws IllegalArgumentException, IllegalStateException {
+    try {
+      validateGameInProgress();
+      validateCoordinates(row, col);
+      
+      List<C> currentHand = getCurrentPlayerHand();
+      
+      // Check if card index is valid
+      if (cardIndex < 0 || cardIndex >= currentHand.size()) {
+        return false;
+      }
+      
+      C cardToPlace = currentHand.get(cardIndex);
+      
+      // Check if cell has pawns
+      if (getCellContent(row, col) != CellContent.PAWNS) {
+        return false;
+      }
+      
+      // Check if pawns are owned by the current player
+      if (getCellOwner(row, col) != currentPlayerColors) {
+        return false;
+      }
+      
+      // Check if there are enough pawns
+      if (getPawnCount(row, col) < cardToPlace.getCost()) {
+        return false;
+      }
+      
+      return true;
+      
+    } catch (IllegalStateException e) {
+      // Game not started or already over
+      return false;
+    } catch (IllegalArgumentException e) {
+      // Invalid coordinates
+      return false;
+    }
+  }
 }

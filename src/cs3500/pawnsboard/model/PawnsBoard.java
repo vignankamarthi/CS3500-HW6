@@ -1,11 +1,7 @@
 package cs3500.pawnsboard.model;
 
-import java.util.List;
-
 import cs3500.pawnsboard.model.cards.Card;
 import cs3500.pawnsboard.model.cell.PawnsBoardCell;
-import cs3500.pawnsboard.model.enumerations.CellContent;
-import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.exceptions.IllegalAccessException;
 import cs3500.pawnsboard.model.exceptions.IllegalCardException;
 import cs3500.pawnsboard.model.exceptions.IllegalOwnerException;
@@ -43,7 +39,8 @@ import cs3500.pawnsboard.model.exceptions.InvalidDeckConfigurationException;
  * @param <C> the type of Card used in this game
  * @param <E> the type of Cell used in this game's board
  */
-public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
+public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> 
+        extends ReadOnlyPawnsBoard<C, E> {
 
   // -----------------------------------------------------------------------
   // Game Setup and Management
@@ -67,24 +64,6 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
   void startGame(int rows, int cols, String redDeckConfigPath,
                  String blueDeckConfigPath, int startingHandSize)
           throws IllegalArgumentException, InvalidDeckConfigurationException;
-
-  /**
-   * Checks if the game has ended.
-   *
-   * <p>In the PawnsBoardBase implementation, the game ends when both players pass their turn
-   * in succession. Alternative implementations might define different ending conditions.</p>
-   *
-   * @return true if the game is over, false otherwise
-   */
-  boolean isGameOver();
-
-  /**
-   * Gets the current player whose turn it is.
-   *
-   * @return the current player
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  PlayerColors getCurrentPlayer() throws IllegalStateException;
 
   // -----------------------------------------------------------------------
   // PlayerColors Actions
@@ -123,129 +102,13 @@ public interface PawnsBoard<C extends Card, E extends PawnsBoardCell<C>> {
    * @throws IllegalOwnerException if there's an issue with turn control
    */
   void passTurn() throws IllegalStateException, IllegalOwnerException;
-
-
-  // -----------------------------------------------------------------------
-  // Board and Game State Queries
-  // -----------------------------------------------------------------------
-
+  
   /**
-   * Gets the dimensions of the board.
+   * Creates a deep copy of the current game board state.
+   * This is useful for AI players to simulate moves without affecting the actual game.
    *
-   * <p>In the PawnsBoardBase implementation, the board is a rectangle so the int array will have
-   * 2 values, first one being the width of the board, and second value being the height of the
-   * board.</p>
-   *
-   * @return an array where the elements represent some type of dimension depending on the shape of
-   *         the board.
+   * @return a new PawnsBoard instance with the same state as this board
    * @throws IllegalStateException if the game hasn't been started
    */
-  int[] getBoardDimensions() throws IllegalStateException;
-
-  /**
-   * Gets the content type of the given cell position on the board with the given dimensions.
-   *
-   * @param row the row index of the cell
-   * @param col the column index of the cell
-   * @return a {@link CellContent} enum indicating whether the cell is empty, contains pawns, or a
-   *         card
-   * @throws IllegalArgumentException if the coordinates are invalid
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  CellContent getCellContent(int row, int col)
-          throws IllegalArgumentException, IllegalStateException;
-
-  /**
-   * Gets the owner of a cell's contents (pawns or card).
-   *
-   * @param row the row index of the cell
-   * @param col the column index of the cell
-   * @return the {@link PlayerColors} who owns the cell's contents, or null if the cell is empty
-   * @throws IllegalArgumentException if the coordinates are invalid
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  PlayerColors getCellOwner(int row, int col)
-          throws IllegalArgumentException, IllegalStateException;
-
-  /**
-   * Gets the number of pawns in a specified cell.
-   *
-   * <p>This method will never return a value greater than 3, in the PawnsBoardBase
-   * implementation.</p>
-   *
-   * @param row the row index of the cell
-   * @param col the column index of the cell
-   * @return the number of pawns in the cell, or 0 if the cell is empty or contains a card
-   * @throws IllegalArgumentException if the coordinates are invalid
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  int getPawnCount(int row, int col)
-          throws IllegalArgumentException, IllegalStateException;
-
-  /**
-   * Gets the cards in the specified playerColors's hand.
-   *
-   * @param playerColors the playerColors whose hand to retrieve
-   * @return a list of Card objects representing the playerColors's hand
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  List<C> getPlayerHand(PlayerColors playerColors) throws IllegalStateException;
-
-
-  /**
-   * Gets the number of cards remaining in the specified playerColors's deck.
-   *
-   * @param playerColors the playerColors whose deck size to retrieve
-   * @return the number of cards left in the playerColors's deck
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  int getRemainingDeckSize(PlayerColors playerColors) throws IllegalStateException;
-
-  // -----------------------------------------------------------------------
-  // Scoring and Game Outcome
-  // -----------------------------------------------------------------------
-
-  /**
-   * Gets the row scores for both players for a specific row.
-   *
-   * <p>In the PawnsBoardBase implementation, the row score is calculated by summing the value
-   * scores of each player's cards on that row.</p>
-   *
-   * @param row the row index to calculate scores for
-   * @return an array where the first element is Red's score for the row and the second is Blue's
-   * @throws IllegalArgumentException if the row is out of bounds
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  int[] getRowScores(int row) throws IllegalArgumentException, IllegalStateException;
-
-  /**
-   * Gets the total score for each player across all rows.
-   *
-   * <p>In the PawnsBoardBase implementation, for each row, the player with the higher row score
-   * adds that score to their total. If row scores are tied, neither player gets points.
-   * Alternative implementations may use different scoring rules.</p>
-   *
-   * @return an array where the first element is Red's total score and the second is Blue's
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  int[] getTotalScore() throws IllegalStateException;
-
-  /**
-   * Gets the winning player if the game is over.
-   *
-   * @return the winning PlayerColors (RED or BLUE), or null if the game is tied
-   * @throws IllegalStateException if the game hasn't been started or is not over
-   */
-  PlayerColors getWinner() throws IllegalStateException;
-
-  /**
-   * Gets the card at the specified cell position.
-   *
-   * @param row the row index of the cell
-   * @param col the column index of the cell
-   * @return the card at the specified position, or null if the cell doesn't contain a card
-   * @throws IllegalArgumentException if the coordinates are invalid
-   * @throws IllegalStateException if the game hasn't been started
-   */
-  C getCardAtCell(int row, int col) throws IllegalArgumentException, IllegalStateException;
+  PawnsBoard<C, E> copy() throws IllegalStateException;
 }

@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.io.File;
 import java.util.List;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -519,18 +520,325 @@ public class PawnsBoardBaseTest {
   // Try to place a card on BLUE's pawns when it's RED's turn
   // This should fail because RED can't place ons BLUE's pawns
   try {
-    // Get BLUE column (last column)
-    int blueCol = model.getBoardDimensions()[1] - 1;
+  // Get BLUE column (last column)
+  int blueCol = model.getBoardDimensions()[1] - 1;
 
-    model.placeCard(0, 0, blueCol);
-    fail("Should have thrown IllegalOwnerException");
+  model.placeCard(0, 0, blueCol);
+  fail("Should have thrown IllegalOwnerException");
   } catch (IllegalOwnerException e) {
-    // This is the expected exception
+  // This is the expected exception
   assertEquals("Pawns in cell are not owned by current player", e.getMessage());
   } catch (Exception e) {
   fail("Wrong exception type thrown: " + e.getClass().getName() +
-      " with message: " + e.getMessage());
+  " with message: " + e.getMessage());
   }
+  }
+  
+  /**
+   * Tests the isLegalMove method with a valid move.
+   * Verifies that it correctly identifies a legal move without making it.
+   * This test checks that placing a card at a valid position returns true.
+   */
+  @Test
+  public void testIsLegalMove_ValidMove() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // Check if placing the first card (index 0) at RED's starting pawn (0,0) is legal
+    assertTrue("Should be a legal move", model.isLegalMove(0, 0, 0));
+  }
+  
+  /**
+   * Tests the isLegalMove method with an invalid card index.
+   * Verifies that it correctly identifies an illegal move due to invalid card index.
+   * This test checks that attempting to play a card that doesn't exist in the player's hand
+   * returns false.
+   */
+  @Test
+  public void testIsLegalMove_InvalidCardIndex() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // Try with an invalid card index
+    assertFalse("Move with invalid card index should be illegal", 
+            model.isLegalMove(10, 0, 0));
+  }
+  
+  /**
+   * Tests the isLegalMove method with a cell containing no pawns.
+   * Verifies that it correctly identifies an illegal move due to missing pawns.
+   * This test checks that attempting to place a card on an empty cell returns false.
+   */
+  @Test
+  public void testIsLegalMove_NoPawns() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // Try to place on an empty cell (1,1)
+    assertFalse("Move on empty cell should be illegal", 
+            model.isLegalMove(0, 1, 1));
+  }
+  
+  /**
+   * Tests the isLegalMove method with a cell containing opponent's pawns.
+   * Verifies that it correctly identifies an illegal move due to opponent ownership.
+   * This test checks that a RED player attempting to place a card on BLUE's pawns returns false.
+   */
+  @Test
+  public void testIsLegalMove_OpponentPawns() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // RED trying to place on BLUE's pawn (0,4)
+    int blueCol = model.getBoardDimensions()[1] - 1;
+    assertFalse("Move on opponent's pawns should be illegal", 
+            model.isLegalMove(0, 0, blueCol));
+  }
+  
+  /**
+   * Tests the isLegalMove method with a card that costs more than available pawns.
+   * Verifies that it correctly identifies an illegal move due to insufficient pawns.
+   * This test checks that attempting to place a card with cost > 1 on a cell with only 1 pawn
+   * returns false.
+   */
+  @Test
+  public void testIsLegalMove_InsufficientPawns() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // Find a card with cost > 1
+    int expensiveCardIndex = -1;
+    for (int i = 0; i < model.getPlayerHand(PlayerColors.RED).size(); i++) {
+      if (model.getPlayerHand(PlayerColors.RED).get(i).getCost() > 1) {
+        expensiveCardIndex = i;
+        break;
+      }
+    }
+    
+    if (expensiveCardIndex != -1) {
+      // Starting pawns have count 1, which is not enough for this card
+      assertFalse("Move with insufficient pawns should be illegal", 
+              model.isLegalMove(expensiveCardIndex, 0, 0));
+    }
+  }
+  
+  /**
+   * Tests the isLegalMove method with invalid coordinates.
+   * Verifies that it correctly identifies an illegal move due to invalid coordinates.
+   * This test checks that attempting to place a card outside the board boundaries returns false.
+   */
+  @Test
+  public void testIsLegalMove_InvalidCoordinates() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // Try with coordinates outside the board
+    assertFalse("Move with invalid coordinates should be illegal", 
+            model.isLegalMove(0, 10, 10));
+  }
+  
+  /**
+   * Tests the isLegalMove method when the game is not started.
+   * Verifies that it correctly handles this state.
+   * This test expects an IllegalStateException to be thrown when trying to check
+   * move legality before the game is started.
+   */
+  @Test
+  public void testIsLegalMove_GameNotStarted() {
+    try {
+      model.isLegalMove(0, 0, 0);
+      fail("Should throw IllegalStateException when game not started");
+    } catch (IllegalStateException e) {
+      assertEquals("Game has not been started", e.getMessage());
+    }
+  }
+  
+  /**
+   * Tests the isLegalMove method when the game is over.
+   * Verifies that it correctly handles this state.
+   * This test expects an IllegalStateException to be thrown when trying to check
+   * move legality after the game has ended.
+   */
+  @Test
+  public void testIsLegalMove_GameOver() throws InvalidDeckConfigurationException, IllegalOwnerException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // End the game by both players passing
+    model.passTurn(); // RED passes
+    model.passTurn(); // BLUE passes
+    
+    assertTrue("Game should be over", model.isGameOver());
+    
+    try {
+      model.isLegalMove(0, 0, 0);
+      fail("Should throw IllegalStateException when game is over");
+    } catch (IllegalStateException e) {
+      assertEquals("Game is already over", e.getMessage());
+    }
+  }
+
+  /**
+   * Tests the copy method creates a complete copy of the game state.
+   * Verifies that the copied board has the same dimensions, cell contents, and game state.
+   * This test checks multiple aspects of the copy to ensure it's a perfect duplicate of the original,
+   * including game state, board dimensions, cell contents, player hands, and deck sizes.
+   */
+  @Test
+  public void testCopy_BasicGameState() throws InvalidDeckConfigurationException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // Create a copy of the board
+    PawnsBoard<PawnsBoardBaseCard, ?> copy = model.copy();
+    
+    // Test game state properties
+    assertEquals("Game started state should match", false, copy.isGameOver());
+    assertEquals("Current player should match", PlayerColors.RED, copy.getCurrentPlayer());
+    
+    // Test board dimensions
+    assertArrayEquals("Board dimensions should match", 
+            model.getBoardDimensions(), copy.getBoardDimensions());
+    
+    // Test cell contents in the starting board
+    int[] dimensions = model.getBoardDimensions();
+    for (int r = 0; r < dimensions[0]; r++) {
+      for (int c = 0; c < dimensions[1]; c++) {
+        assertEquals("Cell content should match", 
+                model.getCellContent(r, c), copy.getCellContent(r, c));
+        if (model.getCellContent(r, c) != CellContent.EMPTY) {
+          assertEquals("Cell owner should match", 
+                  model.getCellOwner(r, c), copy.getCellOwner(r, c));
+          assertEquals("Pawn count should match", 
+                  model.getPawnCount(r, c), copy.getPawnCount(r, c));
+        }
+      }
+    }
+    
+    // Test player hands
+    assertEquals("RED hand size should match", 
+            model.getPlayerHand(PlayerColors.RED).size(), 
+            copy.getPlayerHand(PlayerColors.RED).size());
+    assertEquals("BLUE hand size should match", 
+            model.getPlayerHand(PlayerColors.BLUE).size(), 
+            copy.getPlayerHand(PlayerColors.BLUE).size());
+    
+    // Test remaining deck sizes
+    assertEquals("RED deck size should match", 
+            model.getRemainingDeckSize(PlayerColors.RED), 
+            copy.getRemainingDeckSize(PlayerColors.RED));
+    assertEquals("BLUE deck size should match", 
+            model.getRemainingDeckSize(PlayerColors.BLUE), 
+            copy.getRemainingDeckSize(PlayerColors.BLUE));
+  }
+  
+  /**
+   * Tests that a copied board preserves card placements.
+   * Verifies that cards played on the original board are also present on the copy.
+   * This test checks that a card placed on the original board is correctly copied,
+   * including its position, owner, and properties (name, cost, value).
+   */
+  @Test
+  public void testCopy_WithCardPlacement() throws InvalidDeckConfigurationException, 
+          IllegalAccessException, IllegalOwnerException, IllegalCardException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // RED places a card
+    model.placeCard(0, 0, 0);
+    
+    // Create a copy after card placement
+    PawnsBoard<PawnsBoardBaseCard, ?> copy = model.copy();
+    
+    // Verify card placement is copied
+    assertEquals("Cell content should be CARD", 
+            CellContent.CARD, copy.getCellContent(0, 0));
+    assertEquals("Card owner should be RED", 
+            PlayerColors.RED, copy.getCellOwner(0, 0));
+    assertNotNull("Card should be present", copy.getCardAtCell(0, 0));
+    
+    // Verify the card has the same properties
+    PawnsBoardBaseCard originalCard = model.getCardAtCell(0, 0);
+    PawnsBoardBaseCard copiedCard = copy.getCardAtCell(0, 0);
+    assertEquals("Card name should match", originalCard.getName(), copiedCard.getName());
+    assertEquals("Card cost should match", originalCard.getCost(), copiedCard.getCost());
+    assertEquals("Card value should match", originalCard.getValue(), copiedCard.getValue());
+  }
+  
+  /**
+   * Tests that a copied board preserves cards and their influence effects.
+   * Verifies that the influence effects of cards are also copied correctly.
+   * This test places a card that influences surrounding cells, then creates a copy
+   * and checks that the entire board state, including all influenced cells, matches.
+   */
+  @Test
+  public void testCopy_WithCardInfluence() throws InvalidDeckConfigurationException, 
+          IllegalAccessException, IllegalOwnerException, IllegalCardException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // RED places a card that may influence adjacent cells
+    model.placeCard(0, 0, 0);
+    
+    // Create a copy after card placement and influence
+    PawnsBoard<PawnsBoardBaseCard, ?> copy = model.copy();
+    
+    // Verify the entire board state matches
+    int[] dimensions = model.getBoardDimensions();
+    for (int r = 0; r < dimensions[0]; r++) {
+      for (int c = 0; c < dimensions[1]; c++) {
+        assertEquals("Cell content should match at (" + r + "," + c + ")", 
+                model.getCellContent(r, c), copy.getCellContent(r, c));
+        
+        if (model.getCellContent(r, c) != CellContent.EMPTY) {
+          assertEquals("Cell owner should match at (" + r + "," + c + ")", 
+                  model.getCellOwner(r, c), copy.getCellOwner(r, c));
+          assertEquals("Pawn count should match at (" + r + "," + c + ")", 
+                  model.getPawnCount(r, c), copy.getPawnCount(r, c));
+        }
+      }
+    }
+  }
+  
+  /**
+   * Tests that the copied board is truly independent from the original.
+   * Verifies that changes to the copy don't affect the original.
+   * This test creates a copy, makes a change to the copy (places a card),
+   * and then verifies that the original board remains unchanged while
+   * the copy reflects the new change.
+   */
+  @Test
+  public void testCopy_Independence() throws InvalidDeckConfigurationException, 
+          IllegalAccessException, IllegalOwnerException, IllegalCardException {
+    model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
+    
+    // Create a copy
+    PawnsBoard<PawnsBoardBaseCard, ?> copy = model.copy();
+    
+    // Make changes to the copy
+    copy.placeCard(0, 0, 0);  // RED places a card on the copy
+    
+    // Verify original board is unchanged
+    assertEquals("Original cell should still have pawns", 
+            CellContent.PAWNS, model.getCellContent(0, 0));
+    assertEquals("Original pawn count should be unchanged", 
+            1, model.getPawnCount(0, 0));
+    
+    // Verify the copy was changed
+    assertEquals("Copy cell should have a card", 
+            CellContent.CARD, copy.getCellContent(0, 0));
+    
+    // Verify turn has changed on copy but not original
+    assertEquals("Original player should still be RED", 
+            PlayerColors.RED, model.getCurrentPlayer());
+    assertEquals("Copy player should now be BLUE", 
+            PlayerColors.BLUE, copy.getCurrentPlayer());
+  }
+  
+  /**
+   * Tests that copy throws an exception when the game hasn't been started.
+   * Verifies that the method correctly validates game state.
+   * This test expects an IllegalStateException to be thrown when trying to copy
+   * a game board before the game has been started.
+   */
+  @Test
+  public void testCopy_GameNotStarted() {
+    try {
+      model.copy();
+      fail("Should throw IllegalStateException when game not started");
+    } catch (IllegalStateException e) {
+      assertEquals("Game has not been started", e.getMessage());
+    }
   }
 
   /**

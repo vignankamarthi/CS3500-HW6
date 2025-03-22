@@ -1,6 +1,7 @@
 package cs3500.pawnsboard;
 
 import cs3500.pawnsboard.model.PawnsBoardBase;
+import cs3500.pawnsboard.model.ReadOnlyPawnsBoard;
 import cs3500.pawnsboard.model.cards.PawnsBoardBaseCard;
 import cs3500.pawnsboard.model.enumerations.PlayerColors;
 import cs3500.pawnsboard.model.exceptions.IllegalAccessException;
@@ -36,7 +37,9 @@ public class PawnsBoardBaseIntegrationTest {
   @Before
   public void setUp() {
     model = new PawnsBoardBase<>();
-    view = new PawnsBoardTextualView<>(model);
+    // Use the model as a ReadOnlyPawnsBoard for the view
+    ReadOnlyPawnsBoard<PawnsBoardBaseCard, ?> readOnlyModel = model;
+    view = new PawnsBoardTextualView<>(readOnlyModel);
     redTestDeckPath = "docs" + File.separator + "RED3x5TestingDeck.config";
     blueTestDeckPath = "docs" + File.separator + "BLUE3x5TestingDeck.config";
   }
