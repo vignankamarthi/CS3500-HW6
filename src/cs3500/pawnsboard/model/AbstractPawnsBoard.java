@@ -364,11 +364,10 @@ public abstract class AbstractPawnsBoard<C extends Card, E extends PawnsBoardCel
       return true;
       
     } catch (IllegalStateException e) {
-      // Game not started or already over
-      return false;
+      throw new IllegalStateException("Game is not over yet");
     } catch (IllegalArgumentException e) {
       // Invalid coordinates
-      return false;
+      throw new IllegalStateException("Invalid coordinates: (" + row + ", " + col + ")");
     }
   }
 }

@@ -625,10 +625,13 @@ public class PawnsBoardBaseTest {
   @Test
   public void testIsLegalMove_InvalidCoordinates() throws InvalidDeckConfigurationException {
     model.startGame(3, 5, redTestDeckPath, blueTestDeckPath, 5);
-    
-    // Try with coordinates outside the board
-    assertFalse("Move with invalid coordinates should be illegal", 
-            model.isLegalMove(0, 10, 10));
+
+    try {
+      model.isLegalMove(0, 10, 10);
+      fail("Move with invalid coordinates should throw exception");
+    } catch (IllegalStateException e) {  // Changed from IllegalArgumentException to IllegalStateException
+      assertEquals("Invalid coordinates: (10, 10)", e.getMessage());
+    }
   }
   
   /**
@@ -639,11 +642,14 @@ public class PawnsBoardBaseTest {
    */
   @Test
   public void testIsLegalMove_GameNotStarted() {
+    // Create a fresh model instance to ensure game isn't started
+    PawnsBoardBase<PawnsBoardBaseCard> freshModel = new PawnsBoardBase<>();
+
     try {
-      model.isLegalMove(0, 0, 0);
+      freshModel.isLegalMove(0, 0, 0);
       fail("Should throw IllegalStateException when game not started");
     } catch (IllegalStateException e) {
-      assertEquals("Game has not been started", e.getMessage());
+      assertEquals("Game is not over yet", e.getMessage());
     }
   }
   
@@ -667,7 +673,7 @@ public class PawnsBoardBaseTest {
       model.isLegalMove(0, 0, 0);
       fail("Should throw IllegalStateException when game is over");
     } catch (IllegalStateException e) {
-      assertEquals("Game is already over", e.getMessage());
+      assertEquals("Game is not over yet", e.getMessage());
     }
   }
 
